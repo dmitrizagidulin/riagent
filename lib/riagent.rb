@@ -22,7 +22,7 @@ require "riagent/version"
 require "riak_json"
 require "riak_json/active_model"
 
-require "riagent/railtie" #if defined?(Rails)
+require "riagent/railtie" if defined?(Rails)
 
 module Riagent
   def self.config
