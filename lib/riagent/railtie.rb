@@ -23,7 +23,7 @@ require 'riak_json'
 
 module Riagent
   # Railtie for Rails integration and initialization
-  class RiagentRailtie < Rails::Railtie
+  class Railtie < Rails::Railtie
     initializer "omnidoc.configure_rails_initialization" do
       config_file = Rails.root.join('config', 'riak.yml')
       if File.exist?(config_file)
