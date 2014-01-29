@@ -20,7 +20,7 @@
 
 require "riagent/version"
 
-require "riagent/railtie" if defined?(Rails)
+require "riagent/railtie" #if defined?(Rails)
 
 module Riagent
   def self.config
