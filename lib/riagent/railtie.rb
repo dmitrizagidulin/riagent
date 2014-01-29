@@ -18,6 +18,10 @@
 ##
 ## -------------------------------------------------------------------
 
-require "riagent/version"
+require 'rails/railtie'
 
-require 'riagent/railtie' if defined?(Rails)
+module Riagent
+  # Railtie for Rails integration and initialization
+  class RiagentRailtie < Rails::Railtie
+  end
+end
