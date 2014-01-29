@@ -18,13 +18,10 @@
 ##
 ## -------------------------------------------------------------------
 
-require "bundler/gem_tasks"
-require "rake"
-require "rake/testtask"
+require 'test_helper'
 
-task :default => :test
-
-Rake::TestTask.new :test do |t|
-  t.libs << 'lib' << 'test'
-  t.pattern = 'test/**/*_test.rb'
+describe "Riagent" do
+  it "should pass first test" do
+    assert true
+  end
 end
