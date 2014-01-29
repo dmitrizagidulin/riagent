@@ -21,3 +21,13 @@
 require "riagent/version"
 
 require 'riagent/railtie' if defined?(Rails)
+
+module Riagent
+  def self.config
+    @config ||= {}
+  end
+  
+  def self.config=(value)
+    @config = value
+  end
+end

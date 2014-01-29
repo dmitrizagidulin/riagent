@@ -19,9 +19,18 @@
 ## -------------------------------------------------------------------
 
 require 'rails/railtie'
+require 'riak_json'
 
 module Riagent
   # Railtie for Rails integration and initialization
   class RiagentRailtie < Rails::Railtie
+    initializer "omnidoc.configure_rails_initialization" do
+      config_file = Rails.root.join('config', 'riak.yml')
+      if File.exist?(config_file)
+        config = RiakJson::Client.load_config_file(config_file).with_indifferent_access
+        env_config = config[Rails.env]
+        Riagent.config = env_config
+      end
+    end
   end
 end
