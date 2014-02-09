@@ -19,8 +19,7 @@
 ## -------------------------------------------------------------------
 
 require "riagent/version"
-require "riak_json"
-require "riak_json/active_model"
+require "riagent/document"
 
 require "riagent/railtie" if defined?(Rails)
 
