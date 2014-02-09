@@ -18,17 +18,11 @@
 ##
 ## -------------------------------------------------------------------
 
-require "riagent/version"
-require "riagent/document"
-require "active_support/concern"
+require 'test_helper'
 
-require "riagent/configuration"
-require "riagent/railtie" if defined?(Rails)
-
-module Riagent
-  extend ActiveSupport::Concern
-  extend Riagent::Configuration
-  
-  included do
+describe "Riagent" do
+  it "provides a configuration hash" do
+    Riagent.config.must_be_kind_of Hash
+    Riagent.config.must_be_empty  # Un-initialized config
   end
 end

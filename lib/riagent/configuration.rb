@@ -18,10 +18,16 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'test_helper'
+require "active_support/concern"
 
-describe "Riagent" do
-  it "should pass first test" do
-    assert true
+module Riagent
+  module Configuration
+    def config
+      @config ||= {}
+    end
+
+    def config=(value)
+      @config = value
+    end
   end
 end
