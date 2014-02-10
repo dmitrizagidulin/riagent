@@ -18,11 +18,12 @@
 ##
 ## -------------------------------------------------------------------
 
-require "riagent/version"
-require "riagent/configuration"
-require "riagent/active_document"
-require "riagent/railtie" if defined?(Rails)
-
-module Riagent
-  extend Riagent::Configuration
+class User
+  include Riagent::ActiveDocument
+  
+  attribute :username, String, search_index: { as: :text }
+  attribute :email, String, search_index: { as: :string }
+  attribute :language, String, default: 'en'
+  
+#  validates_presence_of :username
 end

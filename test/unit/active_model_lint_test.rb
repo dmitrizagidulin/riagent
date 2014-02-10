@@ -18,11 +18,16 @@
 ##
 ## -------------------------------------------------------------------
 
-require "riagent/version"
-require "riagent/configuration"
-require "riagent/active_document"
-require "riagent/railtie" if defined?(Rails)
+require 'test_helper'
+require 'active_model/lint'
 
-module Riagent
-  extend Riagent::Configuration
+# Runs the ActiveModel::Lint test suite, to make sure a model fits the ActiveModel API
+# See http://yehudakatz.com/2010/01/10/activemodel-make-any-ruby-object-feel-like-activerecord/
+class ActiveModelLintTest < MiniTest::Unit::TestCase
+  include ActiveModel::Lint::Tests
+  
+  def setup
+    # Sample Riagent::ActiveDocument instance, implementing the ActiveModel API. See test/examples/models/user.rb
+    @model = User.new
+  end
 end

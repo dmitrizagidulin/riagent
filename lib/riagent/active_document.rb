@@ -18,11 +18,30 @@
 ##
 ## -------------------------------------------------------------------
 
-require "riagent/version"
-require "riagent/configuration"
-require "riagent/active_document"
-require "riagent/railtie" if defined?(Rails)
+require 'riagent/document'
+require 'riagent/conversion'
+require 'active_support/concern'
+require "active_model"
+require "active_model/naming"
 
 module Riagent
-  extend Riagent::Configuration
+  module ActiveDocument
+    extend ActiveSupport::Concern
+    extend ActiveModel::Naming
+    include ActiveModel::Validations
+    
+    included do
+      include Riagent::Document
+      include Riagent::Conversion
+    end
+    
+    module ClassMethods
+      # Returns string representation for the collection name
+      # Used to determine the RiakJson::Collection name, or the Riak Bucket name
+      # Uses ActiveModel::Naming functionality to derive the name
+      def collection_name
+        self.model_name.plural
+      end
+    end
+  end
 end

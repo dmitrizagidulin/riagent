@@ -21,3 +21,7 @@
 require 'minitest/autorun'
 require 'minitest-spec-context'
 require 'riagent'
+require 'examples/models/user'
+
+# Set this to silence "[deprecated] I18n.enforce_available_locales will default to true in the future." warnings
+I18n.config.enforce_available_locales = true
