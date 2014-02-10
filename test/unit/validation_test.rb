@@ -23,9 +23,10 @@ require 'test_helper'
 describe "a Riagent::ActiveDocument" do
   it "supports ActiveModel validations" do
     @new_user = User.new
-    refute @new_user.valid? # requires a username
+    refute @new_user.valid?, "User requires a username to be present"
+    assert @new_user.errors.messages.include?(:username), "Missing username validation error when saving"
     
-    @new_user.username = 'TestUser'
-    assert @new_user.valid?
+    @new_user.username = "TestUser"
+    assert @new_user.valid?, "User should now be valid, after setting a username"
   end
 end
