@@ -18,16 +18,14 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'test_helper'
+require "riak_json"
 
-describe "a Riagent::ActiveDocument has Persistence options" do
-  it "can persist to a RiakJson::Collection" do
-    # Adding the line +collection_type :riak_json+ to a model 
-    # means that it will be persisted to a RiakJson::Collection
-    User.get_collection_type.must_equal :riak_json
-    User.persistence_strategy.must_equal Riagent::Persistence::RiakJsonStrategy
-    
-    # It also grants access to a RiakJson::Client instance, to the model class
-    User.client.must_be_kind_of RiakJson::Client
+module Riagent
+  module Persistence
+    class RiakJsonStrategy
+      def self.client
+        RiakJson::Client.new
+      end
+    end
   end
 end

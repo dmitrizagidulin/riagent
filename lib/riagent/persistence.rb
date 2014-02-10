@@ -19,16 +19,32 @@
 ## -------------------------------------------------------------------
 
 require "active_support/concern"
+require "riagent/persistence/riak_json_strategy"
 
 module Riagent
   module Persistence
     extend ActiveSupport::Concern
     
     module ClassMethods
+      def client
+        self.persistence_strategy.client
+      end
+      
       # Determines the document's persistence strategy
       # Valid options: [:riak_json]
+      # Usage:
+      # <code>
+      # class SomeModel
+      #   include Riagent::ActiveDocument
+      #   collection_type :riak_json  # persist to a RiakJson::Collection
+      # end
+      # </code>
       def collection_type(coll_type)
         @collection_type = coll_type
+        case @collection_type
+        when :riak_json
+          self.persistence_strategy = Riagent::Persistence::RiakJsonStrategy
+        end
       end
       
       def get_collection_type
@@ -37,6 +53,10 @@ module Riagent
       
       def persistence_strategy
         @persistence_strategy ||= nil
+      end
+      
+      def persistence_strategy=(strategy)
+        @persistence_strategy = strategy
       end
     end
   end
