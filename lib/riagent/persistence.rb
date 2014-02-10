@@ -18,31 +18,25 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'active_support/concern'
-require "active_model"
-require "active_model/naming"
-require 'riagent/document'
-require 'riagent/conversion'
-require 'riagent/persistence'
+require "active_support/concern"
 
 module Riagent
-  module ActiveDocument
+  module Persistence
     extend ActiveSupport::Concern
-    extend ActiveModel::Naming
-    include ActiveModel::Validations
-    
-    included do
-      include Riagent::Document
-      include Riagent::Conversion
-      include Riagent::Persistence
-    end
     
     module ClassMethods
-      # Returns string representation for the collection name
-      # Used to determine the RiakJson::Collection name, or the Riak Bucket name
-      # Uses ActiveModel::Naming functionality to derive the name
-      def collection_name
-        self.model_name.plural
+      # Determines the document's persistence strategy
+      # Valid options: [:riak_json]
+      def collection_type(coll_type)
+        @collection_type = coll_type
+      end
+      
+      def get_collection_type
+        @collection_type ||= nil
+      end
+      
+      def persistence_strategy
+        @persistence_strategy ||= nil
       end
     end
   end

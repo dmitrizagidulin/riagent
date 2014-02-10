@@ -21,6 +21,8 @@
 class User
   include Riagent::ActiveDocument
   
+  collection_type :riak_json  # Persist to a RiakJson::Collection
+  
   attribute :username, String, search_index: { as: :text }
   attribute :email, String, search_index: { as: :string }
   attribute :language, String, default: 'en'
