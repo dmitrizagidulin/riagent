@@ -23,7 +23,7 @@ require 'active_model/conversion'
 
 module Riagent
   module Conversion
-    # Has this document been deleted from RiakJson?
+    # Has this document been deleted?
     # Required by ActiveModel::Conversion API
     # @return [Boolean]
     def destroyed?

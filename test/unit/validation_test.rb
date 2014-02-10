@@ -18,12 +18,14 @@
 ##
 ## -------------------------------------------------------------------
 
-class User
-  include Riagent::ActiveDocument
-  
-  attribute :username, String, search_index: { as: :text }
-  attribute :email, String, search_index: { as: :string }
-  attribute :language, String, default: 'en'
-  
-  validates_presence_of :username
+require 'test_helper'
+
+describe "a Riagent::ActiveDocument" do
+  it "supports ActiveModel validations" do
+    @new_user = User.new
+    refute @new_user.valid? # requires a username
+    
+    @new_user.username = 'TestUser'
+    assert @new_user.valid?
+  end
 end
