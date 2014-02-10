@@ -18,21 +18,16 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'test_helper'
-
-describe "a Riagent::ActiveDocument" do
-  it "supports ActiveModel validations" do
-    @new_user = User.new
-    refute @new_user.valid?, "User requires a username to be present"
-    assert @new_user.errors.messages.include?(:username), "Missing username validation error when saving"
-    
-    @new_user.username = "TestUser"
-    assert @new_user.valid?, "User should now be valid, after setting a username"
+module Riagent
+  # Generic Riagent exception class
+  class RiagentError < StandardError
   end
   
-  it "raises InvalidDocumentError on save!()" do
-#    @new_user = User.new
-#    refute @new_user.valid?, "User requires a username to be present"
-#    lambda { @new_user.save! }.must_raise Riagent::InvalidDocumentError
+  # Raised by <tt>save!</tt> when a document does not pass validation
+  class InvalidDocumentError < RiagentError
+    attr_reader :document # :nodoc:
+    def initialize(document) # :nodoc:
+      @document = document
+    end
   end
 end

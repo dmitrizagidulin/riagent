@@ -19,6 +19,7 @@
 ## -------------------------------------------------------------------
 
 require "riagent/version"
+require "riagent/errors"
 require "riagent/configuration"
 require "riagent/active_document"
 require "riagent/railtie" if defined?(Rails)
