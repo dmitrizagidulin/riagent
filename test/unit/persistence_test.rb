@@ -21,13 +21,31 @@
 require 'test_helper'
 
 describe "a Riagent::ActiveDocument has Persistence options" do
-  it "can persist to a RiakJson::Collection" do
-    # Adding the line +collection_type :riak_json+ to a model 
-    # means that it will be persisted to a RiakJson::Collection
-    User.get_collection_type.must_equal :riak_json
-    User.persistence_strategy.must_equal Riagent::Persistence::RiakJsonStrategy
+  context "via collection_type :riak_json" do
+    it "#model class methods" do
+      # Adding the line +collection_type :riak_json+ to a model 
+      # means that it will be persisted to a RiakJson::Collection
+      User.get_collection_type.must_equal :riak_json
+      User.persistence_strategy.must_equal :riak_json
+      
+      # It also grants access to a RiakJson::Client instance, to the model class
+      User.client.must_be_kind_of RiakJson::Client
+      
+      User.collection.must_be_kind_of RiakJson::Collection
+      User.collection_name.must_equal 'users'
+    end
     
-    # It also grants access to a RiakJson::Client instance, to the model class
-    User.client.must_be_kind_of RiakJson::Client
+    it "#model instance methods" do
+      user = User.new
+      
+      # Adding the line +collection_type :riak_json+ to a model 
+      # exposes the usual array of persistence methods
+      user.must_respond_to :save
+      user.must_respond_to :save!
+      user.must_respond_to :update
+      user.must_respond_to :update_attributes  # alias for update()
+      user.must_respond_to :update!
+      user.must_respond_to :destroy
+    end
   end
 end

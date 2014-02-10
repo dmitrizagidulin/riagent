@@ -19,12 +19,21 @@
 ## -------------------------------------------------------------------
 
 require "riak_json"
+require "active_support/concern"
 
 module Riagent
   module Persistence
-    class RiakJsonStrategy
-      def self.client
-        RiakJson::Client.new
+    module RiakJsonStrategy
+      extend ActiveSupport::Concern
+      
+      module ClassMethods
+        def client
+          RiakJson::Client.new
+        end
+        
+        def collection
+          self.client.collection(self.collection_name)
+        end
       end
     end
   end
