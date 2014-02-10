@@ -29,5 +29,8 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
     # Calling model.save() should result in a collection.insert() call
     user.save({:validate => false})
     User.collection.verify
+    
+    # Reset
+    User.collection = nil
   end
 end
