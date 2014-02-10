@@ -31,8 +31,8 @@ describe "a Riagent::ActiveDocument" do
   end
   
   it "raises InvalidDocumentError on save!()" do
-#    @new_user = User.new
-#    refute @new_user.valid?, "User requires a username to be present"
-#    lambda { @new_user.save! }.must_raise Riagent::InvalidDocumentError
+    @new_user = User.new
+    refute @new_user.valid?, "User requires a username to be present"
+    lambda { @new_user.save! }.must_raise Riagent::InvalidDocumentError
   end
 end

@@ -25,6 +25,11 @@ module Riagent
   module Persistence
     extend ActiveSupport::Concern
     
+    included do
+      extend ActiveModel::Callbacks
+      define_model_callbacks :create, :update, :save, :destroy
+    end
+    
     # Delete the document from its collection
     def destroy
       run_callbacks(:destroy) do

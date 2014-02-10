@@ -18,29 +18,16 @@
 ##
 ## -------------------------------------------------------------------
 
-require "riak_json"
-require "active_support/concern"
+require 'test_helper'
 
-module Riagent
-  module Persistence
-    module RiakJsonStrategy
-      extend ActiveSupport::Concern
-      
-      module ClassMethods
-        # Returns a RiakJson::Collection instance for this document
-        def collection
-          @collection ||= self.client.collection(self.collection_name)
-        end
-        
-        # Sets the RiakJson::Collection instance for this document
-        def collection=(collection_obj)
-          @collection = collection_obj
-        end
-        
-        def riak_json_client
-          RiakJson::Client.new
-        end
-      end
-    end
+describe "a Riagent::ActiveDocument that persists to RiakJson" do
+  it "saves via collection.insert()" do
+    user = User.new
+    User.collection = MiniTest::Mock.new
+    User.collection.expect :insert, nil, [user]
+    
+    # Calling model.save() should result in a collection.insert() call
+    user.save({:validate => false})
+    User.collection.verify
   end
 end
