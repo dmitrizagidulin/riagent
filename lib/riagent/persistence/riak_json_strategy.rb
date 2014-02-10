@@ -27,7 +27,7 @@ module Riagent
       extend ActiveSupport::Concern
       
       module ClassMethods
-        def client
+        def riak_json_client
           RiakJson::Client.new
         end
         

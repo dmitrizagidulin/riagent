@@ -79,7 +79,11 @@ module Riagent
     
     module ClassMethods
       def client
-        self.persistence_strategy.client
+        @client ||= nil
+      end
+      
+      def client=(client)
+        @client = client
       end
       
       # Determines the document's persistence strategy
@@ -97,6 +101,7 @@ module Riagent
         when :riak_json
           self.persistence_strategy = :riak_json
           include Riagent::Persistence::RiakJsonStrategy
+          self.client = self.riak_json_client()
         end
       end
       
