@@ -117,6 +117,17 @@ module Riagent
         self.from_rj_document(doc, persisted=true)
       end
       
+      # Return the first document that matches the query
+      def find_one(query)
+        if query.kind_of? Hash
+          query = query.to_json
+        end
+        doc = self.collection.find_one(query)
+        if doc.present?
+          self.from_rj_document(doc, persisted=true) 
+        end
+      end
+      
       def get_collection_type
         @collection_type ||= nil
       end
@@ -127,6 +138,19 @@ module Riagent
       
       def persistence_strategy=(strategy)
         @persistence_strategy = strategy
+      end
+      
+      # Return all documents that match the query
+      def where(query)
+        if query.kind_of? Hash
+          query = query.to_json
+        end
+        result = self.collection.find_all(query)
+        if result.present?
+          result.documents.map do |doc| 
+            self.from_rj_document(doc, persisted=true)
+          end
+        end
       end
     end
   end

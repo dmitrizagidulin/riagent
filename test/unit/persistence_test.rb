@@ -50,6 +50,8 @@ describe "a Riagent::ActiveDocument has Persistence options" do
     
     it "#model persistence class methods" do
       User.must_respond_to :find
+      User.must_respond_to :find_one
+      User.must_respond_to :where
     end
   end
 end

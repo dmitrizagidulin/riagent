@@ -77,4 +77,30 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
     # Reset
     User.collection = nil
   end
+  
+  it "performs a where() via collection.find_all()" do
+    User.collection = MiniTest::Mock.new
+    query = { country: 'USA' }
+    User.collection.expect :find_all, [], [query.to_json]
+    
+    # Calling Model class where() should result in a collection.find_all()
+    User.where(query)
+    User.collection.verify
+    
+    # Reset
+    User.collection = nil
+  end
+  
+  it "performs a find_one() via collection.find_one()" do
+    User.collection = MiniTest::Mock.new
+    query = { username: 'TestUser' }
+    User.collection.expect :find_one, [], [query.to_json]
+    
+    # Calling Model class find_one() should result in a collection.find_one()
+    User.find_one(query)
+    User.collection.verify
+    
+    # Reset
+    User.collection = nil
+  end
 end
