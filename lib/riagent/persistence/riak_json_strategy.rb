@@ -27,6 +27,14 @@ module Riagent
       extend ActiveSupport::Concern
       
       module ClassMethods
+        def client
+          @client ||= Riagent.riak_json_client
+        end
+        
+        def client=(client)
+          @client = client
+        end
+        
         # Returns a RiakJson::Collection instance for this document
         def collection
           @collection ||= self.client.collection(self.collection_name)
@@ -47,10 +55,6 @@ module Riagent
             active_doc_instance.persist!  # Mark as persisted / not new
           end
           active_doc_instance
-        end
-        
-        def riak_json_client
-          RiakJson::Client.new
         end
       end
     end

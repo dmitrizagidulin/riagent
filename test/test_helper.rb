@@ -27,3 +27,7 @@ require 'examples/models/user'
 
 # Set this to silence "[deprecated] I18n.enforce_available_locales will default to true in the future." warnings
 I18n.config.enforce_available_locales = true
+
+# Load config file and set up the relevant clients for integration testing
+Riagent.load_config_file('test/config/riak.yml')
+Riagent.init_clients(:test)  # Set up the client for the test environment

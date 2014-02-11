@@ -29,5 +29,45 @@ module Riagent
     def config=(value)
       @config = value
     end
+    
+    def config_for(environment=:development)
+      if self.config.present?
+        env_config = self.config[environment.to_s]
+      else
+        env_config = {
+          'host' => ENV['RIAK_HOST'],
+          'http_port' => ENV['RIAK_HTTP_PORT'],
+          'pb_port' => ENV['RIAK_PB_PORT']
+        }
+      end
+      env_config
+    end
+    
+    def init_clients(environment=:development)
+      self.init_riak_json_client(environment)
+    end
+    
+    def init_riak_json_client(environment=:development)
+      env_config = self.config_for(environment)
+      client = RiakJson::Client.new(env_config['host'], env_config['http_port'])
+      self.riak_json_client = client
+    end
+    
+    def load_config_file(config_file_path)
+      config_file = File.expand_path(config_file_path)
+      config_hash = YAML.load(ERB.new(File.read(config_file)).result)
+      self.config = config_hash
+    end
+    
+    # @return [RiakJson::Client] The client for the current thread.
+    def riak_json_client
+      Thread.current[:riak_json_client] ||= nil
+    end
+  
+    # Sets the client for the current thread.
+    # @param [RiakJson::Client] value the client
+    def riak_json_client=(value)
+      Thread.current[:riak_json_client] = value
+    end
   end
 end

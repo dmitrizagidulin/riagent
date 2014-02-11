@@ -100,14 +100,6 @@ module Riagent
         end
       end
       
-      def client
-        @client ||= nil
-      end
-      
-      def client=(client)
-        @client = client
-      end
-      
       # Determines the document's persistence strategy
       # Valid options: [:riak_json]
       # Usage:
@@ -123,7 +115,6 @@ module Riagent
         when :riak_json
           self.persistence_strategy = :riak_json
           include Riagent::Persistence::RiakJsonStrategy
-          self.client = self.riak_json_client()
         end
       end
       

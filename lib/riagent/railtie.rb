@@ -27,9 +27,8 @@ module Riagent
     initializer "riagent.configure_rails_initialization" do
       config_file = Rails.root.join('config', 'riak.yml')
       if File.exist?(config_file)
-        config = RiakJson::Client.load_config_file(config_file).with_indifferent_access
-        env_config = config[Rails.env]
-        Riagent.config = env_config
+        Riagent.load_config_file(config_file)
+        Riagent.init_clients(Rails.env)  # Set up the client for the current environment
       end
     end
   end
