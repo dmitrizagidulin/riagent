@@ -70,6 +70,7 @@ module Riagent
       end
     end
     
+    # Perform an update(), raise an error if the doc is not valid
     def update!(attrs)
       unless update(attrs)
         raise Riagent::InvalidDocumentError.new(self)

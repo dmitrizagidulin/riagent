@@ -24,6 +24,7 @@ require "active_model/naming"
 require 'riagent/document'
 require 'riagent/conversion'
 require 'riagent/persistence'
+require 'riagent/associations'
 require 'riagent/search_schema'
 
 module Riagent
@@ -36,6 +37,7 @@ module Riagent
       include Riagent::Document
       include Riagent::Conversion
       include Riagent::Persistence
+      include Riagent::Associations
       extend Riagent::SearchSchema
     end
     

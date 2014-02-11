@@ -18,14 +18,22 @@
 ##
 ## -------------------------------------------------------------------
 
+require 'examples/models/address_book'
+
 class User
   include Riagent::ActiveDocument
   
   collection_type :riak_json  # Persist to a RiakJson::Collection
   
+  # Explicit attributes
+  # key is an implied attribute, present in all ActiveDocument instances
   attribute :username, String, search_index: { as: :text }
   attribute :email, String, search_index: { as: :string }
   attribute :language, String, default: 'en'
   
+  # Associations
+  has_one :address_book, :class => AddressBook
+  
+  # Validations
   validates_presence_of :username
 end
