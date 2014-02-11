@@ -104,7 +104,7 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
     User.collection = nil
   end
   
-  it "performs a all_for_field() via collection.find_all()" do
+  it "performs an all_for_field() via collection.find_all()" do
     User.collection = MiniTest::Mock.new
     User.collection.expect :find_all, [], [String]
     

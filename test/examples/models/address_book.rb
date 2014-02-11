@@ -18,12 +18,14 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'minitest/autorun'
-require 'minitest-spec-context'
-require 'riagent'
-require 'examples/models/address_book'
 require 'examples/models/contact'
-require 'examples/models/user'
 
-# Set this to silence "[deprecated] I18n.enforce_available_locales will default to true in the future." warnings
-I18n.config.enforce_available_locales = true
+# Sample model demonstrating embedding of other ActiveDocuments
+# See test/examples/models/contact.rb (the model that's being embedded)
+# See also test/unit/embedded_test.rb
+class AddressBook
+  include Riagent::ActiveDocument
+  
+  attribute :user_key, String
+  attribute :contacts, Set[Contact]
+end
