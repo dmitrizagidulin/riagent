@@ -11,6 +11,7 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
+test/config/riak.yml
 
 # YARD artifacts
 .yardoc
