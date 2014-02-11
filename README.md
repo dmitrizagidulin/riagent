@@ -22,7 +22,13 @@ rails generate riagent:install
 ```
 
 ## Testing
-To run the tests
+First, set up the Riak config file for (and make sure it's pointing to a running Riak instance)
+
+```
+cp test/config/riak.yml.example test/config/riak.yml
+```
+
+Then, to run the tests
 
 ```
 bundle exec rake test
