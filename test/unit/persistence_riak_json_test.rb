@@ -33,4 +33,30 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
     # Reset
     User.collection = nil
   end
+
+  it "updates via collection.update()" do
+    user = User.new username: 'TestUserInitial'
+    User.collection = MiniTest::Mock.new
+    User.collection.expect :insert, nil, [user]
+    
+    # model.update() is implemented as a save() call (with updated attributes)
+    user.update({ username: 'TestUserNewName'} )
+    User.collection.verify
+    
+    # Reset
+    User.collection = nil
+  end
+  
+  it "destroys via collection.remove()" do
+    user = User.new
+    User.collection = MiniTest::Mock.new
+    User.collection.expect :remove, nil, [user]
+    
+    # Calling model.destroy() should result in a collection.remove() call
+    user.destroy
+    User.collection.verify
+    
+    # Reset
+    User.collection = nil
+  end
 end
