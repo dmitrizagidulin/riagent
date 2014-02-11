@@ -35,7 +35,7 @@ describe "a Riagent::ActiveDocument has Persistence options" do
       User.collection_name.must_equal 'users'
     end
     
-    it "#model instance methods" do
+    it "#model persistence instance methods" do
       user = User.new
       
       # Adding the line +collection_type :riak_json+ to a model 
@@ -46,6 +46,10 @@ describe "a Riagent::ActiveDocument has Persistence options" do
       user.must_respond_to :update_attributes  # alias for update()
       user.must_respond_to :update!
       user.must_respond_to :destroy
+    end
+    
+    it "#model persistence class methods" do
+      User.must_respond_to :find
     end
   end
 end

@@ -110,6 +110,13 @@ module Riagent
         end
       end
       
+      # Load a document by key.
+      def find(key)
+        return nil if key.nil? or key.empty?
+        doc = self.collection.find_by_key(key)
+        self.from_rj_document(doc, persisted=true)
+      end
+      
       def get_collection_type
         @collection_type ||= nil
       end

@@ -59,4 +59,22 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
     # Reset
     User.collection = nil
   end
+  
+  it "returns nil when doing a find() for nil or empty key" do
+    User.find(nil).must_be_nil
+    User.find('').must_be_nil
+  end
+  
+  it "performs a find() via collection.find_by_key()" do
+    test_key = 'user123'
+    User.collection = MiniTest::Mock.new
+    User.collection.expect :find_by_key, nil, [test_key]
+    
+    # Calling Model class find() should result in a collection.find_by_key()
+    User.find(test_key)
+    User.collection.verify
+    
+    # Reset
+    User.collection = nil
+  end
 end
