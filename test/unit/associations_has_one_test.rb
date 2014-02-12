@@ -48,6 +48,11 @@ describe "Riagent::Document has_one association" do
 
     user.address_book.must_be_kind_of AddressBook
   end
+  
+  it "should check type when assigning to a target attribute" do
+    user = User.new
+    lambda { user.address_book = User.new }.must_raise ArgumentError
+  end
 
   it "lazy loads the target object, if key is present" do
     user = User.new

@@ -42,6 +42,10 @@ module Riagent
         
         # Create the setter method=
         define_method(target_setter_method) do | target |
+          # Only assignments of the correct target class are allowed
+          unless target.kind_of? target_class
+            raise ArgumentError, "Invalid argument type #{target.class}, #{target_class} expected."
+          end
           target_key = target ? target.key : nil
           attribute_setter = "#{target_key_attribute}=".to_sym
           send(attribute_setter, target_key)
