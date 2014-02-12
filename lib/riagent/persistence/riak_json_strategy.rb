@@ -49,7 +49,7 @@ module Riagent
         # @return [ActiveDocument, nil] ActiveDocument instance, or nil if the Document is nil
         def from_rj_document(doc, persisted=false)
           return nil if doc.nil?
-          active_doc_instance = self.instantiate(doc.body)
+          active_doc_instance = self.instantiate(doc.attributes)
           active_doc_instance.key = doc.key
           if persisted
             active_doc_instance.persist!  # Mark as persisted / not new

@@ -25,7 +25,8 @@ require 'examples/models/contact'
 # See also test/unit/embedded_test.rb
 class AddressBook
   include Riagent::ActiveDocument
+
+  collection_type :riak_json  # Persist to a RiakJson::Collection
   
-  attribute :user_key, String
   attribute :contacts, Set[Contact]
 end

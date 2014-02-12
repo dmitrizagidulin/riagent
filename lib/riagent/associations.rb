@@ -37,21 +37,30 @@ module Riagent
         target_cache_attribute = "#{name}_cache".to_sym
         attr_accessor target_cache_attribute
           
-        # Create a getter method
-        getter = "#{name}".to_sym
-        define_method(getter) do
-          send(target_cache_attribute)
-        end
+        target_getter = "#{name}".to_sym
+        target_setter_method = "#{name}=".to_sym
         
-        # Create a setter method=
-        setter = "#{name}=".to_sym
-        define_method(setter) do | target |
+        # Create the setter method=
+        define_method(target_setter_method) do | target |
           target_key = target ? target.key : nil
           attribute_setter = "#{target_key_attribute}=".to_sym
           send(attribute_setter, target_key)
           attribute_cache_getter = "#{target_cache_attribute}="
           send(attribute_cache_getter, target)
         end
+
+        # Create the getter method
+        define_method(target_getter) do
+          # First, check to see if the target instance has already been loaded/cached
+          cached_value = send(target_cache_attribute)
+          if cached_value.nil?
+            target_key = send(target_key_attribute)
+            cached_value = target_class.find(target_key)
+            send(target_setter_method, cached_value)  # Cache the loaded target instance
+          end
+          cached_value
+        end
+        
       end
     end
   end

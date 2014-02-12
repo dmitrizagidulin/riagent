@@ -21,6 +21,9 @@
 require 'test_helper'
 
 describe "Riagent::Document has_one association" do
+  # If User has_one :address_book,
+  # Then user is source, and address_book is target
+  
   it "adds a <target>_key attribute" do
     # a User model includes a 'has_one :address_book' association
     User.attribute_set[:address_book_key].wont_be_nil
@@ -46,6 +49,26 @@ describe "Riagent::Document has_one association" do
     user.address_book.must_be_kind_of AddressBook
   end
 
+  it "lazy loads the target object, if key is present" do
+    user = User.new
+    user.address_book_key = 'test-book-123'  # Set the target key manually
+    user.address_book_cache.must_be_nil "Setting the target key should not load the target object instance"
+    
+    # Create a mock object that'll be loaded from db
+    mock_loaded_address_book = AddressBook.new
+    mock_loaded_address_book.key = 'test-book-123'
+    
+    AddressBook.collection = MiniTest::Mock.new
+    AddressBook.collection.expect :find_by_key, mock_loaded_address_book, ['test-book-123']
+      
+    # Calling user.address_book should lazy-load via the target collection.find_by_key()
+    user.address_book
+    AddressBook.collection.verify
+    
+    # Reset
+    AddressBook.collection = nil
+  end
+  
   it "adds a build_<target> method" do
 
   end
