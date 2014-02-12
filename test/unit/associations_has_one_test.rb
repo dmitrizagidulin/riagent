@@ -30,7 +30,7 @@ describe "Riagent::Document has_one association" do
     user = User.new
     user.must_respond_to :address_book_key
   end
-
+  
   it "adds getter and setter methods for the target" do
     user = User.new
     user.must_respond_to :address_book
@@ -70,6 +70,11 @@ describe "Riagent::Document has_one association" do
   end
   
   it "adds a build_<target> method" do
-
+    user = User.new
+    user.key = 'test-user-123'
+    
+    user.build_address_book(attributes={})
+    # Target object gets source object's key by default, via build_<target>()
+    user.address_book.key.must_equal 'test-user-123'
   end
 end

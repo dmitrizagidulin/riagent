@@ -30,7 +30,7 @@ module Riagent
         target_class = options[:class]
         
         # Create a <target name>_key attribute, 
-        attribute target_key_attribute, String, default: lambda { | source, attribute | source.key }
+        attribute target_key_attribute, String
         
         # Create a <target name>_cache attribute accessors
         # These will be used to store the actual instance of the target
@@ -61,6 +61,13 @@ module Riagent
           cached_value
         end
         
+        # Create build_<target> method
+        build_helper_method = "build_#{name}".to_sym
+        define_method(build_helper_method) do | attributes |
+          target_instance = target_class.new attributes
+          target_instance.key = self.key # The target object gets the source's key by default
+          send(target_setter_method, target_instance)
+        end
       end
     end
   end
