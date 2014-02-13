@@ -25,6 +25,47 @@ module Riagent
     extend ActiveSupport::Concern
     
     module ClassMethods
+      def has_many(name, options={})
+        query_type = options[:using]
+        target_class = options[:class]
+        case query_type
+        when :solr
+          has_many_using_solr(name, target_class, query_type, options)
+        else
+          raise ArgumentError, ":using query type not supported"
+        end
+      end
+      
+      # Create a has_many association where the collection will be loaded
+      # via RiakJson Solr queries.
+      def has_many_using_solr(name, target_class, query_type, options)
+        target_getter_method = "#{name}".to_sym
+        
+        # Create a <target name>_cache attribute accessors
+        # These will be used to store the actual loaded collection
+        target_cache_attribute = "#{name}_cache".to_sym
+        attr_accessor target_cache_attribute
+        
+        # Create the getter method
+        define_method(target_getter_method) do
+          # First, check to see if the target collection has already been loaded/cached
+#          cached_collection = send(target_cache_attribute)
+#          if cached_collection.nil?
+#            
+#            source_key_value = send(:key)  # Get the source (parent) id
+#            cached_collection = target_class.find(target_key)
+#            send(target_setter_method, cached_collection)  # Cache the loaded target collection
+#          end
+#          cached_value
+        end
+        
+        target_setter_method = "#{name}=".to_sym
+        
+        # Create the setter method=
+        define_method(target_setter_method) do | target |
+        end
+      end
+      
       def has_one(name, options={})
         target_key_attribute = "#{name}_key"
         target_class = options[:class]
@@ -37,7 +78,7 @@ module Riagent
         target_cache_attribute = "#{name}_cache".to_sym
         attr_accessor target_cache_attribute
           
-        target_getter = "#{name}".to_sym
+        target_getter_method = "#{name}".to_sym
         target_setter_method = "#{name}=".to_sym
         
         # Create the setter method=
@@ -54,7 +95,7 @@ module Riagent
         end
 
         # Create the getter method
-        define_method(target_getter) do
+        define_method(target_getter_method) do
           # First, check to see if the target instance has already been loaded/cached
           cached_value = send(target_cache_attribute)
           if cached_value.nil?

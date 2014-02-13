@@ -19,6 +19,7 @@
 ## -------------------------------------------------------------------
 
 require 'examples/models/address_book'
+require 'examples/models/blog_post'
 
 class User
   include Riagent::ActiveDocument
@@ -33,6 +34,7 @@ class User
   
   # Associations
   has_one :address_book, :class => AddressBook
+  has_many :posts, :class => BlogPost, :using => :solr
   
   # Validations
   validates_presence_of :username
