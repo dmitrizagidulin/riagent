@@ -46,7 +46,7 @@ document embedding, and more. See the [riagent-document README](https://github.c
 for more details.
 
 #### Advanced Riak K/V and Query Support
-Reads and writes of single objects into Riak is easy (and has the benefit of being massively scalable, highly concurrent, and fault-tolerant).
+Reads and writes of single objects into Riak are easy (and have the benefit of being massively scalable, highly concurrent, and fault-tolerant).
 But what about listing and querying? Every developer that gets past a Hello World get/put tutorial on Riak is soon faced with questions
 about more advanced access patterns. How do I implement collections, and list things? How do I search or query on various attributes?
 Should I use Secondary Indexes? What about Search/Solr integration? 
