@@ -29,7 +29,7 @@ class User
   # Explicit attributes
   # key is an implied attribute, present in all ActiveDocument instances
   attribute :username, String, search_index: { as: :text }
-  attribute :email, String, search_index: { as: :string }
+  attribute :email, String, search_index: { as: :string }, default: ''
   attribute :language, String, default: 'en'
   
   # Associations
