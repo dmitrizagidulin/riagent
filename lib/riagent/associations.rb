@@ -71,7 +71,7 @@ module Riagent
         target_class = options[:class]
         
         # Create a <target name>_key attribute, 
-        attribute target_key_attribute, String
+        attribute target_key_attribute, String, default: ''
         
         # Create a <target name>_cache attribute accessors
         # These will be used to store the actual instance of the target
