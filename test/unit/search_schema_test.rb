@@ -13,4 +13,16 @@ describe "an Active Document" do
     schema.fields[1][:type].must_equal 'string'
     schema.fields[1][:require].must_equal true
   end
+  
+  it "can save the Solr indexing schema to RiakJson" do
+    schema = User.schema
+    User.collection = MiniTest::Mock.new
+    # Calling .set_schema will result in a call to collection.schema()
+    User.collection.expect :schema, schema
+
+    # Ensure that calling User.save_solr_schema() results in a call to collection.set_schema()
+    User.collection.expect :set_schema, nil, [schema]
+    User.save_solr_schema
+    User.collection.verify
+  end
 end

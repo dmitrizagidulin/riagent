@@ -30,7 +30,8 @@ module Riagent
   #   end
   #   puts SampleModel.schema.inspect
   #   # => <RiakJson::CollectionSchema:0x000001050eef10 @fields=[{:name=>"name", :type=>"text", :require=>true}]>
-  #   SampleModel.collection.set_schema(SampleModel.schema)  # sets that schema for the collection
+  #
+  #   SampleModel.save_solr_schema()  # sets that schema for the collection
   # </code>
   module SearchSchema
     # Returns a CollectionSchema instance, derived from the document attributes
@@ -43,6 +44,15 @@ module Riagent
         end
       end
       schema
+    end
+    
+    # Saves the generated Solr indexing schema to RiakJson.
+    # Usage:
+    # <code>
+    #   SampleModel.save_solr_schema()
+    # </code>
+    def save_solr_schema
+      self.collection.set_schema(self.collection.schema)
     end
   end
 end

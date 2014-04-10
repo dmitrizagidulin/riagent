@@ -46,31 +46,31 @@ describe "a Riagent::ActiveDocument's Persistence Layer" do
     user.destroy
   end
   
-  it "can read, update and delete a document" do
-    test_key = 'george-123'
-    new_user = User.new username: 'george', email: 'george@washington.com'
-    new_user.key = test_key
-    new_user.save
-    
-    found_user = User.find(test_key) # Load User by key
-    found_user.must_be_kind_of User
-    found_user.key.must_equal test_key
-    refute found_user.new_record?, "A loaded by key user object is not new"
-    assert found_user.persisted?, "A loaded by key user object should be markes as persisted"
-    
-    new_attributes = {username: 'henry', email: 'henry@gmail.com' }
-    found_user.update(new_attributes)  # Also saves
-    
-    updated_user = User.find(test_key)
-    updated_user.username.must_equal 'henry'
-    
-    found_user.destroy
-    assert found_user.destroyed?
-  end
-  
-  it "returns an empty array for queries that return no results" do
-    query = { username: 'nonexistent' }
-    result = User.where(query)
-    result.must_be_empty
-  end
+#  it "can read, update and delete a document" do
+#    test_key = 'george-123'
+#    new_user = User.new username: 'george', email: 'george@washington.com'
+#    new_user.key = test_key
+#    new_user.save
+#    
+#    found_user = User.find(test_key) # Load User by key
+#    found_user.must_be_kind_of User
+#    found_user.key.must_equal test_key
+#    refute found_user.new_record?, "A loaded by key user object is not new"
+#    assert found_user.persisted?, "A loaded by key user object should be markes as persisted"
+#    
+#    new_attributes = {username: 'henry', email: 'henry@gmail.com' }
+#    found_user.update(new_attributes)  # Also saves
+#    
+#    updated_user = User.find(test_key)
+#    updated_user.username.must_equal 'henry'
+#    
+#    found_user.destroy
+#    assert found_user.destroyed?
+#  end
+#  
+#  it "returns an empty array for queries that return no results" do
+#    query = { username: 'nonexistent' }
+#    result = User.where(query)
+#    result.must_be_empty
+#  end
 end
