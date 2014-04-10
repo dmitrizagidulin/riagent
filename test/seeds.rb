@@ -18,15 +18,13 @@
 ##
 ## -------------------------------------------------------------------
 
-require_relative 'contact'
+require 'riagent'
+require './test/examples/models/user'
 
-# Sample model demonstrating embedding of other ActiveDocuments
-# See test/examples/models/contact.rb (the model that's being embedded)
-# See also test/unit/embedded_test.rb
-class AddressBook
-  include Riagent::ActiveDocument
+puts "Seeding..."
+# Load config file and set up the relevant clients for seeding test data
+Riagent.load_config_file('test/config/riak.yml')
+Riagent.init_clients(:test)  # Set up the client for the test environment
 
-  collection_type :riak_json  # Persist to a RiakJson::Collection
-  
-  attribute :contacts, Set[Contact]
-end
+# Store the Solr indexing schema for the User model
+User.save_solr_schema()

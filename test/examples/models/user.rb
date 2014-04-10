@@ -18,8 +18,8 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'examples/models/address_book'
-require 'examples/models/blog_post'
+require_relative 'address_book'
+require_relative 'blog_post'
 
 class User
   include Riagent::ActiveDocument

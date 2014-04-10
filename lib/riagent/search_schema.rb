@@ -52,7 +52,7 @@ module Riagent
     #   SampleModel.save_solr_schema()
     # </code>
     def save_solr_schema
-      self.collection.set_schema(self.collection.schema)
+      self.collection.set_schema(self.schema)
     end
   end
 end

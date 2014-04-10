@@ -28,3 +28,20 @@ Rake::TestTask.new :test do |t|
   t.libs << 'lib' << 'test'
   t.pattern = 'test/**/*_test.rb'
 end
+
+Rake::TestTask.new :itest do |t|
+  t.libs << 'lib' << 'test'
+  t.pattern = 'test/integration/*_test.rb'
+end
+
+Rake::TestTask.new :unittest do |t|
+  t.libs << 'lib' << 'test'
+  t.pattern = 'test/unit/*_test.rb'
+end
+
+namespace :db do
+  task :seed do
+    seed_file = File.join('test', 'seeds.rb')
+    load(seed_file) if File.exist?(seed_file)
+  end
+end
