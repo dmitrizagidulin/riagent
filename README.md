@@ -184,7 +184,7 @@ Solr field type that will be used to index it.
 For example, the following model:
 ```ruby
 class User
-  include RiakJson::ActiveDocument
+  include Riagent::ActiveDocument
   
   attribute :username, String, required: true, search_index: { :as => :text }
   attribute :email, String, search_index: { :as => :string }
