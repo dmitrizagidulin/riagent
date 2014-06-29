@@ -19,6 +19,7 @@
 ## -------------------------------------------------------------------
 
 require "active_support/concern"
+require "riak"
 
 module Riagent
   module Configuration
@@ -30,6 +31,9 @@ module Riagent
       @config = value
     end
     
+    # Return a configuration hash for a given environment
+    # @param [Symbol] environment Environment for which to load the client configs 
+    # @return [Hash]
     def config_for(environment=:development)
       if self.config.present?
         env_config = self.config[environment.to_s]
@@ -43,19 +47,27 @@ module Riagent
       env_config
     end
     
-    # Initialize Riagent persistence clients for a given environment
-    # Either called explicitly (see test/test_helper.rb for example usage)
-    # or called by Rails through the 'riagent.configure_rails_initialization' initializer
-    # in lib/railtie.rb
-    def init_clients(environment=:development)
-      self.init_riak_json_client(environment)
-    end
-    
-    def init_riak_json_client(environment=:development)
-      env_config = self.config_for(environment)
+    def init_riak_json_client(env_config)
       client = RiakJson::Client.new(env_config['host'], env_config['http_port'])
       self.riak_json_client = client
     end
+    
+    def init_riak_client(env_config)
+      client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port']
+      self.riak_client = client
+    end
+    
+    # Initialize a Riagent persistence client for a given environment
+    # Either called explicitly (see test/test_helper.rb for example usage)
+    # or called by Rails through the 'riagent.configure_rails_initialization' initializer
+    # in lib/railtie.rb
+    # @param [Hash] env_config Configuration hash for a given environment
+    def init_clients(environment=:development)
+      env_config = self.config_for(environment)
+      self.init_riak_json_client(environment)
+      self.init_riak_client(environment)
+    end
+
     
     def load_config_file(config_file_path)
       config_file = File.expand_path(config_file_path)
@@ -63,12 +75,23 @@ module Riagent
       self.config = config_hash
     end
     
-    # @return [RiakJson::Client] The client for the current thread.
+    # @return [Riak::Client] The Riak client for the current thread.
+    def riak_client
+      Thread.current[:riak_client] ||= nil
+    end
+    
+    # Sets the Riak client for the current thread.
+    # @param [Riak::Client] value the client
+    def riak_client=(value)
+      Thread.current[:riak_client] = value
+    end
+    
+    # @return [RiakJson::Client] The RiakJson client for the current thread.
     def riak_json_client
       Thread.current[:riak_json_client] ||= nil
     end
-  
-    # Sets the client for the current thread.
+    
+    # Sets the RiakJson client for the current thread.
     # @param [RiakJson::Client] value the client
     def riak_json_client=(value)
       Thread.current[:riak_json_client] = value

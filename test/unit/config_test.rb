@@ -28,10 +28,17 @@ describe "Riagent" do
     Riagent.must_respond_to :init_clients
     Riagent.must_respond_to :init_riak_json_client
     Riagent.must_respond_to :riak_json_client
+    Riagent.must_respond_to :init_riak_client
+    Riagent.must_respond_to :riak_client
   end
   
   it "initializes a RiakJson client" do
     # This should have been initialized from config file in test_helper.rb
     Riagent.riak_json_client.must_be_kind_of RiakJson::Client
+  end
+  
+  it "initializes a Riak ruby client" do
+    # This should have been initialized from config file in test_helper.rb
+    Riagent.riak_client.must_be_kind_of Riak::Client
   end
 end
