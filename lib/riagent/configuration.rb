@@ -43,6 +43,10 @@ module Riagent
       env_config
     end
     
+    # Initialize Riagent persistence clients for a given environment
+    # Either called explicitly (see test/test_helper.rb for example usage)
+    # or called by Rails through the 'riagent.configure_rails_initialization' initializer
+    # in lib/railtie.rb
     def init_clients(environment=:development)
       self.init_riak_json_client(environment)
     end

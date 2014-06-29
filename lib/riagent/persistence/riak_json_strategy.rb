@@ -28,7 +28,7 @@ module Riagent
       
       module ClassMethods
         def client
-          @client ||= Riagent.riak_json_client
+          @client ||= Riagent.riak_json_client  # See configuration.rb
         end
         
         def client=(client)
