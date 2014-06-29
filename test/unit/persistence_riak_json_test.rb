@@ -21,6 +21,25 @@
 require 'test_helper'
 
 describe "a Riagent::ActiveDocument that persists to RiakJson" do
+  it "#model persistence instance methods" do
+    user = User.new
+    
+    # Adding the line +collection_type :riak_json+ to a model 
+    # exposes the usual array of persistence methods
+    user.must_respond_to :save
+    user.must_respond_to :save!
+    user.must_respond_to :update
+    user.must_respond_to :update_attributes  # alias for update()
+    user.must_respond_to :update!
+    user.must_respond_to :destroy
+  end
+  
+  it "#model persistence class methods" do
+    User.must_respond_to :find
+    User.must_respond_to :find_one
+    User.must_respond_to :where
+  end
+  
   it "saves via collection.insert()" do
     user = User.new
     User.collection = MiniTest::Mock.new

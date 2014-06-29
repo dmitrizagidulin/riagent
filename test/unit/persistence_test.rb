@@ -34,24 +34,5 @@ describe "a Riagent::ActiveDocument has Persistence options" do
       User.collection.must_be_kind_of RiakJson::Collection
       User.collection_name.must_equal 'users'
     end
-    
-    it "#model persistence instance methods" do
-      user = User.new
-      
-      # Adding the line +collection_type :riak_json+ to a model 
-      # exposes the usual array of persistence methods
-      user.must_respond_to :save
-      user.must_respond_to :save!
-      user.must_respond_to :update
-      user.must_respond_to :update_attributes  # alias for update()
-      user.must_respond_to :update!
-      user.must_respond_to :destroy
-    end
-    
-    it "#model persistence class methods" do
-      User.must_respond_to :find
-      User.must_respond_to :find_one
-      User.must_respond_to :where
-    end
   end
 end
