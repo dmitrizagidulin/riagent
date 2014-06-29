@@ -20,10 +20,13 @@
 
 require "active_support/concern"
 require "riagent/persistence/riak_json_strategy"
+require "riagent/persistence/riak_no_index_strategy"
 
 module Riagent
   module Persistence
     extend ActiveSupport::Concern
+    
+    COLLECTION_TYPES = [:riak_json, :riak_no_index]
     
     included do
       extend ActiveModel::Callbacks
@@ -111,11 +114,17 @@ module Riagent
       # end
       # </code>
       def collection_type(coll_type)
+        unless COLLECTION_TYPES.include? coll_type
+          raise ArgumentError, "Invalid collection type: #{coll_type.to_s}"
+        end
         @collection_type = coll_type
         case @collection_type
         when :riak_json
           self.persistence_strategy = :riak_json
           include Riagent::Persistence::RiakJsonStrategy
+        when :riak_no_index
+          self.persistence_strategy = :riak_no_index
+          include Riagent::Persistence::RiakNoIndexStrategy
         end
       end
       

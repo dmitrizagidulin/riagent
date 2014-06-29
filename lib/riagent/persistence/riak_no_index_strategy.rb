@@ -18,43 +18,22 @@
 ##
 ## -------------------------------------------------------------------
 
-require "riak_json"
+require "riak"
 require "active_support/concern"
 
 module Riagent
   module Persistence
-    module RiakJsonStrategy
+    module RiakNoIndexStrategy
       extend ActiveSupport::Concern
-      
       module ClassMethods
+        # @return [Riak::Client|nil] Riak client instance
         def client
-          @client ||= Riagent.riak_json_client  # See lib/configuration.rb
+          @client ||= Riagent.riak_client  # See lib/configuration.rb
         end
         
+        # @param [Riak::Client] client
         def client=(client)
           @client = client
-        end
-        
-        # Returns a RiakJson::Collection instance for this document
-        def collection
-          @collection ||= self.client.collection(self.collection_name)
-        end
-        
-        # Sets the RiakJson::Collection instance for this document
-        def collection=(collection_obj)
-          @collection = collection_obj
-        end
-        
-        # Converts from a RiakJson::Document instance to an instance of ActiveDocument
-        # @return [ActiveDocument, nil] ActiveDocument instance, or nil if the Document is nil
-        def from_rj_document(doc, persisted=false)
-          return nil if doc.nil?
-          active_doc_instance = self.instantiate(doc.attributes)
-          active_doc_instance.key = doc.key
-          if persisted
-            active_doc_instance.persist!  # Mark as persisted / not new
-          end
-          active_doc_instance
         end
       end
     end

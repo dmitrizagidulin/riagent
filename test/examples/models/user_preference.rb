@@ -18,17 +18,16 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'minitest/autorun'
-require 'minitest-spec-context'
-require 'riagent'
-require 'examples/models/address_book'
-require 'examples/models/contact'
-require 'examples/models/user'
-require 'examples/models/user_preference'
-
-# Set this to silence "[deprecated] I18n.enforce_available_locales will default to true in the future." warnings
-I18n.config.enforce_available_locales = true
-
-# Load config file and set up the relevant clients for integration testing
-Riagent.load_config_file('test/config/riak.yml')
-Riagent.init_clients(:test)  # Set up the client for the test environment
+class UserPreference
+  include Riagent::ActiveDocument
+  
+  collection_type :riak_no_index  # Persist to a plain Riak bucket (k/v only)
+  
+  # Explicit attributes
+  # (key is an implied attribute, present in all ActiveDocument instances)
+  attribute :email_ok, Boolean, default: true
+  attribute :email_format, String, default: 'txt'
+  
+  # Validations
+  validates_presence_of :username
+end
