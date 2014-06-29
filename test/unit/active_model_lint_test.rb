@@ -23,7 +23,7 @@ require 'active_model/lint'
 
 # Runs the ActiveModel::Lint test suite, to make sure a model fits the ActiveModel API
 # See http://yehudakatz.com/2010/01/10/activemodel-make-any-ruby-object-feel-like-activerecord/
-class ActiveModelLintTest < MiniTest::Test
+class ActiveModelLintTest < Minitest::Unit::TestCase
   include ActiveModel::Lint::Tests
   
   def setup
