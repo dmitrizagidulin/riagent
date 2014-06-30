@@ -46,7 +46,7 @@ module Riagent
         end
         
         # Converts from a RiakJson::Document instance to an instance of ActiveDocument
-        # @return [ActiveDocument, nil] ActiveDocument instance, or nil if the Document is nil
+        # @return [ActiveDocument|nil] ActiveDocument instance, or nil if the Document is nil
         def from_rj_document(doc, persisted=false)
           return nil if doc.nil?
           active_doc_instance = self.instantiate(doc.attributes)

@@ -21,6 +21,7 @@
 require "active_support/concern"
 require "riagent/persistence/riak_json_strategy"
 require "riagent/persistence/riak_no_index_strategy"
+require "riagent/collection/riak_collection"
 
 module Riagent
   # Provides a common persistence API for RiakJson Documents.

@@ -39,7 +39,7 @@ module Riagent
         # Returns a Riagent::RiakCollection instance for this document
         # (thin wrapper for a regular Riak bucket, see lib/collection/riak_collection.rb)
         def collection
-          @collection ||= self.client.collection(self.collection_name)
+          @collection ||= Riagent::RiakCollection.new(self.collection_name, self.client)
         end
         
         # Sets the Riagent::RiakCollection instance for this document

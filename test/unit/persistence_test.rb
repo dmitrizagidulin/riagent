@@ -50,8 +50,9 @@ describe "a Riagent::ActiveDocument has Persistence options" do
     # It also grants access to a RiakJson::Client instance, to the model class
     UserPreference.client.must_be_kind_of Riak::Client
 
-    #      User.collection.must_be_kind_of RiakJson::Collection
-    #      User.collection_name.must_equal 'users'
+    UserPreference.collection.must_be_kind_of Riagent::RiakCollection
+    UserPreference.collection_name.must_equal 'user_preferences'
+    UserPreference.collection.bucket.must_be_kind_of Riak::Bucket
 
     refute UserPreference.strategy_allows_query?, "RiakNoIndex strategy does not allow querying"
     lambda { UserPreference.where({}) }.must_raise NotImplementedError, "RiakNoIndex strategy does not support querying"
