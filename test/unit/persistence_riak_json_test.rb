@@ -56,8 +56,9 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
 
   it "updates via collection.update()" do
     user = User.new username: 'TestUserInitial'
+    user.persist!  # Updates only make sense for a persisted document
     User.collection = MiniTest::Mock.new
-    User.collection.expect :insert, nil, [user]
+    User.collection.expect :update, nil, [user]
     
     # model.update() is implemented as a save() call (with updated attributes)
     user.update({ username: 'TestUserNewName'} )
@@ -98,7 +99,7 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
     User.collection = nil
   end
   
-  it "performs a all() via collection.all()" do
+  it "performs an all() listing via collection.all()" do
     User.collection = MiniTest::Mock.new
     User.collection.expect :all, [], [1000]  # default results limit of 1000
     

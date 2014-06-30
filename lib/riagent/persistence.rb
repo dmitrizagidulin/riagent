@@ -50,11 +50,15 @@ module Riagent
     # Also triggers :before_create / :after_create type callbacks
     # @return [String] Returns the key for the inserted document
     def save(options={:validate => true})
-      context = new_record? ? :create : :update
+      context = self.new_record? ? :create : :update
       return false if options[:validate] && !valid?(context)
       
       run_callbacks(context) do
-        result = self.class.collection.insert(self)
+        if context == :create
+          result = self.class.collection.insert(self)
+        else
+          result = self.class.collection.update(self)
+        end
         self.persist!
         result
       end
