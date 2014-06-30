@@ -35,6 +35,7 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
   end
   
   it "#model persistence class methods" do
+    User.must_respond_to :all
     User.must_respond_to :find
     User.must_respond_to :find_one
     User.must_respond_to :where
@@ -97,6 +98,18 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
     User.collection = nil
   end
   
+  it "performs a all() via collection.all()" do
+    User.collection = MiniTest::Mock.new
+    User.collection.expect :all, [], [1000]  # default results limit of 1000
+    
+    # Calling Model class where() should result in a collection.all()
+    User.all()
+    User.collection.verify
+    
+    # Reset
+    User.collection = nil
+  end
+  
   it "performs a where() via collection.find_all()" do
     User.collection = MiniTest::Mock.new
     query = { country: 'USA' }
@@ -117,18 +130,6 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
     
     # Calling Model class find_one() should result in a collection.find_one()
     User.find_one(query)
-    User.collection.verify
-    
-    # Reset
-    User.collection = nil
-  end
-  
-  it "performs an all_for_field() via collection.find_all()" do
-    User.collection = MiniTest::Mock.new
-    User.collection.expect :find_all, [], [String]
-    
-    # Calling Model class all_for_field() should result in a collection.find_all()
-    User.all_for_field(:username)
     User.collection.verify
     
     # Reset

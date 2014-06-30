@@ -90,20 +90,15 @@ module Riagent
     end
     
     module ClassMethods
-      # Returns all documents (within results/pagination limit) 
-      #  from a collection.
-      # Implemented instead of all() to get around current RiakJson API limitations
-      # @param [String,Symbol] Name of a document field
-      # @param [Integer] Optional results limit
-      # @return [Array] of ActiveDocument instances
-      def all_for_field(field_name, results_limit=1000)
-        query = {
-            field_name => {'$regex' => "/.*/"},
-            '$per_page'=>results_limit
-        }.to_json
-        result = self.collection.find_all(query)
+      # Return all the documents in the collection
+      # @param [Integer] results_limit Number of results returned
+      # @return [Array|nil] of ActiveDocument instances
+      def all(results_limit=1000)
+        result = self.collection.all(results_limit)
         if result.present?
-          result.documents.map {|doc| self.from_rj_document(doc, persisted=true) }
+          result.documents.map do |doc| 
+            self.from_rj_document(doc, persisted=true)
+          end
         end
       end
       
