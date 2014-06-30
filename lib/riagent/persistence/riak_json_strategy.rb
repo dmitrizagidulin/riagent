@@ -56,6 +56,11 @@ module Riagent
           end
           active_doc_instance
         end
+        
+        # @return [Boolean] Does this persistence strategy support querying?
+        def strategy_allows_query?
+          true
+        end
       end
     end
   end

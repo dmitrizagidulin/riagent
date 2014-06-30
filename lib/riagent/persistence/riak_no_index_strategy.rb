@@ -35,6 +35,23 @@ module Riagent
         def client=(client)
           @client = client
         end
+        
+        # Returns a Riagent::RiakCollection instance for this document
+        # (thin wrapper for a regular Riak bucket, see lib/collection/riak_collection.rb)
+        def collection
+          @collection ||= self.client.collection(self.collection_name)
+        end
+        
+        # Sets the Riagent::RiakCollection instance for this document
+        # (thin wrapper for a regular Riak bucket, see lib/collection/riak_collection.rb)
+        def collection=(collection_obj)
+          @collection = collection_obj
+        end
+        
+        # @return [Boolean] Does this persistence strategy support querying?
+        def strategy_allows_query?
+          false
+        end
       end
     end
   end

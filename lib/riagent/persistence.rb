@@ -23,6 +23,9 @@ require "riagent/persistence/riak_json_strategy"
 require "riagent/persistence/riak_no_index_strategy"
 
 module Riagent
+  # Provides a common persistence API for RiakJson Documents.
+  # Most persistence calls are delegated to the Collection class instance,
+  # which are implemented in persistence/*_strategy.rb modules.
   module Persistence
     extend ActiveSupport::Concern
     
@@ -104,8 +107,7 @@ module Riagent
         end
       end
       
-      # Determines the document's persistence strategy
-      # Valid options: [:riak_json]
+      # Set the document's persistence strategy
       # Usage:
       # <code>
       # class SomeModel
@@ -137,6 +139,9 @@ module Riagent
       
       # Return the first document that matches the query
       def find_one(query)
+        unless self.strategy_allows_query?
+          raise NotImplementedError, "This collection type does not support querying"
+        end
         if query.kind_of? Hash
           query = query.to_json
         end
@@ -160,6 +165,9 @@ module Riagent
       
       # Return all documents that match the query
       def where(query)
+        unless self.strategy_allows_query?
+          raise NotImplementedError, "This collection type does not support querying"
+        end
         if query.kind_of? Hash
           query = query.to_json
         end
