@@ -27,7 +27,4 @@ class UserPreference
   # (key is an implied attribute, present in all ActiveDocument instances)
   attribute :email_ok, Boolean, default: true
   attribute :email_format, String, default: 'txt'
-  
-  # Validations
-  validates_presence_of :username
 end

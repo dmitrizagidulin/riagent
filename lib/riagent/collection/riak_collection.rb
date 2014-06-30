@@ -19,7 +19,6 @@
 ## -------------------------------------------------------------------
 
 require "riak"
-require "active_support/concern"
 
 module Riagent
   # Wraps a Riak bucket
@@ -37,6 +36,22 @@ module Riagent
       self.name = collection_name
       self.client = client
       self.bucket = self.client.bucket(self.name)
+    end
+    
+    def find(key)
+    end
+    
+    def find_by_key(key)
+      self.find(key)
+    end
+    
+    def insert(document)
+    end
+    
+    def remove(document)
+    end
+    
+    def update(document)
     end
   end
 end
