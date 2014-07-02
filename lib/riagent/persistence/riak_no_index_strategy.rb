@@ -59,16 +59,16 @@ module Riagent
       end
       
       # Converts from a Riak::RObject instance to an instance of ActiveDocument
-      # @param [Riak::RObject] robject
+      # @param [Riak::RObject] riak_object
       # @param [Boolean] persisted Mark the document as persisted/not new?
       # @return [ActiveDocument|nil] ActiveDocument instance, or nil if the Riak Object is nil
-      def from_riak_object(robject, persisted=true)
-        return nil if robject.nil?
-        active_doc_instance = self.model_class.from_json(robject.raw_data, robject.key)
+      def from_riak_object(riak_object, persisted=true)
+        return nil if riak_object.nil?
+        active_doc_instance = self.model_class.from_json(riak_object.raw_data, riak_object.key)
         if persisted
           active_doc_instance.persist!  # Mark as persisted / not new
         end
-        # TODO: Modify ActiveDocument to hold a raw object instance
+        active_doc_instance.source_object = riak_object
         active_doc_instance
       end
       
@@ -79,12 +79,12 @@ module Riagent
           # Attempt to fetch existing object, just in case
           self.riak_object = self.bucket.get_or_new(document.key)
         end
-        riak_obj = self.riak_object
-        riak_obj.key = document.key
-        riak_obj.raw_data = document.to_json_document
-        # TODO: Modify ActiveDocument to hold a raw object instance
-        riak_obj = riak_obj.store
-        document.key = riak_obj.key
+        riak_object = self.riak_object
+        riak_object.key = document.key
+        riak_object.raw_data = document.to_json_document
+        riak_object = riak_object.store
+        document.source_object = riak_object  # store the riak object in document
+        document.key = riak_object.key
       end
       
       # @return [Riak::RObject]
