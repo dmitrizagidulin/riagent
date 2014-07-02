@@ -26,6 +26,7 @@ describe "RiakNoIndexStrategy persistence" do
     user_pref = UserPreference.new email_format: 'html'
     generated_key = user_pref.save
     generated_key.wont_be_empty
+    assert user_pref.persisted?
     
     # Now read the object back
     fetched_pref = UserPreference.find(generated_key)

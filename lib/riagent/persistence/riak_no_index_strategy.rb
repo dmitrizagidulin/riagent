@@ -59,8 +59,10 @@ module Riagent
       end
       
       # Converts from a Riak::RObject instance to an instance of ActiveDocument
+      # @param [Riak::RObject] robject
+      # @param [Boolean] persisted Mark the document as persisted/not new?
       # @return [ActiveDocument|nil] ActiveDocument instance, or nil if the Riak Object is nil
-      def from_riak_object(robject, persisted=false)
+      def from_riak_object(robject, persisted=true)
         return nil if robject.nil?
         active_doc_instance = self.model_class.from_json(robject.raw_data, robject.key)
         if persisted
