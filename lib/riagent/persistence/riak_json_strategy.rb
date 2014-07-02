@@ -24,7 +24,6 @@ require "riagent/persistence/persistence_strategy"
 module Riagent
   module Persistence
     class RiakJsonStrategy < PersistenceStrategy
-      attr_writer :client
       attr_writer :collection
       
       # Return all the documents in the collection
@@ -44,16 +43,19 @@ module Riagent
         true
       end
       
+      # @return [RiakJson::Client] RiakJson client for this persistence strategy (lazy initialize)
       def client
         @client ||= Riagent.riak_json_client  # See lib/configuration.rb
       end
 
-      # Returns a RiakJson::Collection instance for this document
+      # @return [RiakJson::Collection] instance for this persistence strategy (lazy initialize)
       def collection
         @collection ||= self.client.collection(self.collection_name)
       end
 
-      # Load a document by key.
+      # Fetch a document by key.
+      # @param [String] key
+      # @return [ActiveDocument|nil]
       def find(key)
         return nil if key.nil? or key.empty?
         doc = self.collection.find_by_key(key)
@@ -61,6 +63,7 @@ module Riagent
       end
       
       # Return the first document that matches the query
+      # @param [String] query RiakJson query, in JSON string form
       def find_one(query)
         if query.kind_of? Hash
           query = query.to_json
@@ -83,19 +86,25 @@ module Riagent
         active_doc_instance
       end
       
+      # @param [RiakJson::ActiveDocument] doc Document to be inserted
+      # @return [Integer] Document key
       def insert(doc)
         self.collection.insert(doc)
       end
-      
+
+      # @param [RiakJson::ActiveDocument] doc Document to be deleted
       def remove(doc)
         self.collection.remove(doc)
       end
-      
+
+      # @param [RiakJson::ActiveDocument] doc Document to be updated
+      # @return [Integer] Document key
       def update(doc)
         self.collection.update(doc)
       end
       
       # Return all documents that match the query
+      # @param [String] query RiakJson query, in JSON string form
       def where(query)
         if query.kind_of? Hash
           query = query.to_json

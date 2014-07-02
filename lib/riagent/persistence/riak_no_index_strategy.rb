@@ -25,7 +25,6 @@ module Riagent
   module Persistence
     class RiakNoIndexStrategy < PersistenceStrategy
       attr_writer :bucket
-      attr_writer :client
       attr_writer :riak_object
       
       # @return [Boolean] Does this persistence strategy support querying?
@@ -33,14 +32,19 @@ module Riagent
         false
       end
       
+      # @return [Riak::Bucket]
       def bucket
         @bucket ||= self.client.bucket(self.collection_name)
       end
       
+      # @return [Riak::Client]
       def client
         @client ||= Riagent.riak_client  # See lib/configuration.rb
       end
-      
+
+      # Fetch a document by key.
+      # @param [String] key
+      # @return [ActiveDocument|nil]
       def find(key)
         begin
           result = self.bucket.get(key)
@@ -62,22 +66,26 @@ module Riagent
         if persisted
           active_doc_instance.persist!  # Mark as persisted / not new
         end
+        # TODO: Modify ActiveDocument to hold a raw object instance
         active_doc_instance
       end
       
+      # @param [RiakJson::ActiveDocument] document Document to be inserted
+      # @return [Integer] Document key
       def insert(document)
         if document.key.present?
           # Attempt to fetch existing object, just in case
-          existing_object = self.bucket.get_or_new(document.key)
-          self.riak_object = existing_object if existing_object.present?
+          self.riak_object = self.bucket.get_or_new(document.key)
         end
         riak_obj = self.riak_object
         riak_obj.key = document.key
         riak_obj.raw_data = document.to_json_document
+        # TODO: Modify ActiveDocument to hold a raw object instance
         riak_obj = riak_obj.store
         document.key = riak_obj.key
       end
       
+      # @return [Riak::RObject]
       def riak_object
         @riak_object ||= Riak::RObject.new(self.bucket).tap do |obj|
           obj.content_type = "application/json"

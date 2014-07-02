@@ -24,6 +24,7 @@ module Riagent
   module Persistence
     # Riagent document persistence strategy
     class PersistenceStrategy
+      attr_accessor :client
       attr_accessor :collection_name
       attr_accessor :model_class
       
