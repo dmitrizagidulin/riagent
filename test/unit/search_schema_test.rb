@@ -16,11 +16,14 @@ describe "an Active Document" do
   
   it "can save the Solr indexing schema to RiakJson" do
     schema = User.schema
-    User.collection = MiniTest::Mock.new
+    User.persistence.collection = MiniTest::Mock.new
 
     # Ensure that calling User.save_solr_schema() results in a call to collection.set_schema()
-    User.collection.expect :set_schema, nil, [RiakJson::CollectionSchema]
+    User.persistence.collection.expect :set_schema, nil, [RiakJson::CollectionSchema]
     User.save_solr_schema
-    User.collection.verify
+    User.persistence.collection.verify
+    
+    # Reset
+    User.persistence.collection = nil
   end
 end

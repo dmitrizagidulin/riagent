@@ -1,5 +1,5 @@
-## ------------------------------------------------------------------- 
-## 
+## -------------------------------------------------------------------
+##
 ## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
@@ -19,38 +19,68 @@
 ## -------------------------------------------------------------------
 
 require "riak"
-require "active_support/concern"
+require "riagent/persistence/persistence_strategy"
 
 module Riagent
   module Persistence
-    module RiakNoIndexStrategy
-      extend ActiveSupport::Concern
-      module ClassMethods
-        # @return [Riak::Client|nil] Riak client instance
-        def client
-          @client ||= Riagent.riak_client  # See lib/configuration.rb
+    class RiakNoIndexStrategy < PersistenceStrategy
+      attr_writer :bucket
+      attr_writer :client
+      attr_writer :riak_object
+      
+      # @return [Boolean] Does this persistence strategy support querying?
+      def allows_query?
+        false
+      end
+      
+      def bucket
+        @bucket ||= self.client.bucket(self.collection_name)
+      end
+      
+      def client
+        @client ||= Riagent.riak_client  # See lib/configuration.rb
+      end
+      
+      def find(key)
+        begin
+          result = self.bucket.get(key)
+        rescue Riak::FailedRequest => fr
+          if fr.not_found?
+            result = nil
+          else
+            raise fr
+          end
         end
-        
-        # @param [Riak::Client] client
-        def client=(client)
-          @client = client
+        self.from_riak_object(result)
+      end
+      
+      # Converts from a Riak::RObject instance to an instance of ActiveDocument
+      # @return [ActiveDocument|nil] ActiveDocument instance, or nil if the Riak Object is nil
+      def from_riak_object(robject, persisted=false)
+        return nil if robject.nil?
+        active_doc_instance = self.model_class.from_json(robject.raw_data, robject.key)
+        if persisted
+          active_doc_instance.persist!  # Mark as persisted / not new
         end
-        
-        # Returns a Riagent::RiakCollection instance for this document
-        # (thin wrapper for a regular Riak bucket, see lib/collection/riak_collection.rb)
-        def collection
-          @collection ||= Riagent::RiakCollection.new(self.collection_name, self.client)
+        active_doc_instance
+      end
+      
+      def insert(document)
+        if document.key.present?
+          # Attempt to fetch existing object, just in case
+          existing_object = self.bucket.get_or_new(document.key)
+          self.riak_object = existing_object if existing_object.present?
         end
-        
-        # Sets the Riagent::RiakCollection instance for this document
-        # (thin wrapper for a regular Riak bucket, see lib/collection/riak_collection.rb)
-        def collection=(collection_obj)
-          @collection = collection_obj
-        end
-        
-        # @return [Boolean] Does this persistence strategy support querying?
-        def strategy_allows_query?
-          false
+        riak_obj = self.riak_object
+        riak_obj.key = document.key
+        riak_obj.raw_data = document.to_json_document
+        riak_obj = riak_obj.store
+        document.key = riak_obj.key
+      end
+      
+      def riak_object
+        @riak_object ||= Riak::RObject.new(self.bucket).tap do |obj|
+          obj.content_type = "application/json"
         end
       end
     end

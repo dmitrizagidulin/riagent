@@ -53,7 +53,7 @@ module Riagent
     end
     
     def init_riak_client(env_config)
-      client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port']
+      client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port'], protocol: 'pbc'
       self.riak_client = client
     end
     
@@ -64,10 +64,9 @@ module Riagent
     # @param [Hash] env_config Configuration hash for a given environment
     def init_clients(environment=:development)
       env_config = self.config_for(environment)
-      self.init_riak_json_client(environment)
-      self.init_riak_client(environment)
+      self.init_riak_json_client(env_config)
+      self.init_riak_client(env_config)
     end
-
     
     def load_config_file(config_file_path)
       config_file = File.expand_path(config_file_path)

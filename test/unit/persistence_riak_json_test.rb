@@ -43,42 +43,42 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
   
   it "saves via collection.insert()" do
     user = User.new
-    User.collection = MiniTest::Mock.new
-    User.collection.expect :insert, nil, [user]
+    User.persistence.collection = MiniTest::Mock.new
+    User.persistence.collection.expect :insert, nil, [user]
     
     # Calling model.save() should result in a collection.insert() call
     user.save({:validate => false})
-    User.collection.verify
+    User.persistence.collection.verify
     
     # Reset
-    User.collection = nil
+    User.persistence.collection = nil
   end
 
   it "updates via collection.update()" do
     user = User.new username: 'TestUserInitial'
     user.persist!  # Updates only make sense for a persisted document
-    User.collection = MiniTest::Mock.new
-    User.collection.expect :update, nil, [user]
+    User.persistence.collection = MiniTest::Mock.new
+    User.persistence.collection.expect :update, nil, [user]
     
     # model.update() is implemented as a save() call (with updated attributes)
     user.update({ username: 'TestUserNewName'} )
-    User.collection.verify
+    User.persistence.collection.verify
     
     # Reset
-    User.collection = nil
+    User.persistence.collection = nil
   end
   
   it "destroys via collection.remove()" do
     user = User.new
-    User.collection = MiniTest::Mock.new
-    User.collection.expect :remove, nil, [user]
+    User.persistence.collection = MiniTest::Mock.new
+    User.persistence.collection.expect :remove, nil, [user]
     
     # Calling model.destroy() should result in a collection.remove() call
     user.destroy
-    User.collection.verify
+    User.persistence.collection.verify
     
     # Reset
-    User.collection = nil
+    User.persistence.collection = nil
   end
   
   it "returns nil when doing a find() for nil or empty key" do
@@ -88,52 +88,52 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
   
   it "performs a find() via collection.find_by_key()" do
     test_key = 'user123'
-    User.collection = MiniTest::Mock.new
-    User.collection.expect :find_by_key, nil, [test_key]
+    User.persistence.collection = MiniTest::Mock.new
+    User.persistence.collection.expect :find_by_key, nil, [test_key]
     
     # Calling Model class find() should result in a collection.find_by_key()
     User.find(test_key)
-    User.collection.verify
+    User.persistence.collection.verify
     
     # Reset
-    User.collection = nil
+    User.persistence.collection = nil
   end
   
   it "performs an all() listing via collection.all()" do
-    User.collection = MiniTest::Mock.new
-    User.collection.expect :all, [], [1000]  # default results limit of 1000
+    User.persistence.collection = MiniTest::Mock.new
+    User.persistence.collection.expect :all, [], [1000]  # default results limit of 1000
     
     # Calling Model class where() should result in a collection.all()
     User.all()
-    User.collection.verify
+    User.persistence.collection.verify
     
     # Reset
-    User.collection = nil
+    User.persistence.collection = nil
   end
   
   it "performs a where() via collection.find_all()" do
-    User.collection = MiniTest::Mock.new
+    User.persistence.collection = MiniTest::Mock.new
     query = { country: 'USA' }
-    User.collection.expect :find_all, [], [query.to_json]
+    User.persistence.collection.expect :find_all, [], [query.to_json]
     
     # Calling Model class where() should result in a collection.find_all()
     User.where(query)
-    User.collection.verify
+    User.persistence.collection.verify
     
     # Reset
-    User.collection = nil
+    User.persistence.collection = nil
   end
   
   it "performs a find_one() via collection.find_one()" do
-    User.collection = MiniTest::Mock.new
+    User.persistence.collection = MiniTest::Mock.new
     query = { username: 'TestUser' }
-    User.collection.expect :find_one, [], [query.to_json]
+    User.persistence.collection.expect :find_one, [], [query.to_json]
     
     # Calling Model class find_one() should result in a collection.find_one()
     User.find_one(query)
-    User.collection.verify
+    User.persistence.collection.verify
     
     # Reset
-    User.collection = nil
+    User.persistence.collection = nil
   end
 end

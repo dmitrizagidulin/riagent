@@ -63,15 +63,15 @@ describe "Riagent::Document has_one association" do
     mock_loaded_address_book = AddressBook.new
     mock_loaded_address_book.key = 'test-book-123'
     
-    AddressBook.collection = MiniTest::Mock.new
-    AddressBook.collection.expect :find_by_key, mock_loaded_address_book, ['test-book-123']
+    AddressBook.persistence = MiniTest::Mock.new
+    AddressBook.persistence.expect :find, mock_loaded_address_book, ['test-book-123']
       
     # Calling user.address_book should lazy-load via the target collection.find_by_key()
     user.address_book
-    AddressBook.collection.verify
+    AddressBook.persistence.verify
     
     # Reset
-    AddressBook.collection = nil
+    AddressBook.persistence = nil
   end
   
   it "adds a build_<target> method" do

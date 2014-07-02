@@ -18,40 +18,19 @@
 ##
 ## -------------------------------------------------------------------
 
-require "riak"
+require 'test_helper'
 
-module Riagent
-  # Wraps a Riak bucket
-  class RiakCollection
-    attr_accessor :bucket
-    attr_accessor :name
-    attr_accessor :client
+describe "RiakNoIndexStrategy persistence" do  
+  it "can save an ActiveDocument to a Riak object" do
+    # First, save the object to Riak
+    user_pref = UserPreference.new email_format: 'html'
+    generated_key = user_pref.save
+    generated_key.wont_be_empty
     
-    # @param [String] collection_name
-    # @param [Riak::Client] client Riak ruby client
-    def initialize(collection_name, client)
-      if collection_name.nil? or collection_name.empty?
-        raise ArgumentError, "Invalid collection name (must not be nil or empty)"
-      end
-      self.name = collection_name
-      self.client = client
-      self.bucket = self.client.bucket(self.name)
-    end
-    
-    def find(key)
-    end
-    
-    def find_by_key(key)
-      self.find(key)
-    end
-    
-    def insert(document)
-    end
-    
-    def remove(document)
-    end
-    
-    def update(document)
-    end
+    # Now read the object back
+    fetched_pref = UserPreference.find(generated_key)
+    fetched_pref.must_be_kind_of UserPreference
+    fetched_pref.key.must_equal generated_key
+    fetched_pref.email_format.must_equal 'html'
   end
 end

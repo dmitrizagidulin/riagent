@@ -35,10 +35,16 @@ describe "a Riagent::ActiveDocument that persists via RiakNoIndex strategy" do
   end
   
   it "#model persistence class methods" do
-    User.must_respond_to :all
-    User.must_respond_to :find
+    UserPreference.must_respond_to :all
+    UserPreference.must_respond_to :find
   end
-  
+
+  it "has a riak object" do
+    riak_object = UserPreference.persistence.riak_object
+    riak_object.must_be_kind_of Riak::RObject
+    riak_object.content_type.must_equal "application/json"
+  end
+    
 #  it "saves via bucket.store()" do
 #    user_pref = UserPreference.new
 #    UserPreference.collection.bucket = MiniTest::Mock.new

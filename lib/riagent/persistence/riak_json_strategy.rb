@@ -1,5 +1,5 @@
-## ------------------------------------------------------------------- 
-## 
+## -------------------------------------------------------------------
+##
 ## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
@@ -19,47 +19,92 @@
 ## -------------------------------------------------------------------
 
 require "riak_json"
-require "active_support/concern"
+require "riagent/persistence/persistence_strategy"
 
 module Riagent
   module Persistence
-    module RiakJsonStrategy
-      extend ActiveSupport::Concern
+    class RiakJsonStrategy < PersistenceStrategy
+      attr_writer :client
+      attr_writer :collection
       
-      module ClassMethods
-        def client
-          @client ||= Riagent.riak_json_client  # See lib/configuration.rb
-        end
-        
-        def client=(client)
-          @client = client
-        end
-        
-        # Returns a RiakJson::Collection instance for this document
-        def collection
-          @collection ||= self.client.collection(self.collection_name)
-        end
-        
-        # Sets the RiakJson::Collection instance for this document
-        def collection=(collection_obj)
-          @collection = collection_obj
-        end
-        
-        # Converts from a RiakJson::Document instance to an instance of ActiveDocument
-        # @return [ActiveDocument|nil] ActiveDocument instance, or nil if the Document is nil
-        def from_rj_document(doc, persisted=false)
-          return nil if doc.nil?
-          active_doc_instance = self.instantiate(doc.attributes)
-          active_doc_instance.key = doc.key
-          if persisted
-            active_doc_instance.persist!  # Mark as persisted / not new
+      # Return all the documents in the collection
+      # @param [Integer] results_limit Number of results returned
+      # @return [Array|nil] of ActiveDocument instances
+      def all(results_limit=1000)
+        result = self.collection.all(results_limit)
+        if result.present?
+          result.documents.map do |doc| 
+            self.from_rj_document(doc, persisted=true)
           end
-          active_doc_instance
         end
-        
-        # @return [Boolean] Does this persistence strategy support querying?
-        def strategy_allows_query?
-          true
+      end
+      
+      # @return [Boolean] Does this persistence strategy support querying?
+      def allows_query?
+        true
+      end
+      
+      def client
+        @client ||= Riagent.riak_json_client  # See lib/configuration.rb
+      end
+
+      # Returns a RiakJson::Collection instance for this document
+      def collection
+        @collection ||= self.client.collection(self.collection_name)
+      end
+
+      # Load a document by key.
+      def find(key)
+        return nil if key.nil? or key.empty?
+        doc = self.collection.find_by_key(key)
+        self.from_rj_document(doc, persisted=true)
+      end
+      
+      # Return the first document that matches the query
+      def find_one(query)
+        if query.kind_of? Hash
+          query = query.to_json
+        end
+        doc = self.collection.find_one(query)
+        if doc.present?
+          self.from_rj_document(doc, persisted=true) 
+        end
+      end
+      
+      # Converts from a RiakJson::Document instance to an instance of ActiveDocument
+      # @return [ActiveDocument|nil] ActiveDocument instance, or nil if the Document is nil
+      def from_rj_document(doc, persisted=false)
+        return nil if doc.nil?
+        active_doc_instance = self.model_class.instantiate(doc.attributes)
+        active_doc_instance.key = doc.key
+        if persisted
+          active_doc_instance.persist!  # Mark as persisted / not new
+        end
+        active_doc_instance
+      end
+      
+      def insert(doc)
+        self.collection.insert(doc)
+      end
+      
+      def remove(doc)
+        self.collection.remove(doc)
+      end
+      
+      def update(doc)
+        self.collection.update(doc)
+      end
+      
+      # Return all documents that match the query
+      def where(query)
+        if query.kind_of? Hash
+          query = query.to_json
+        end
+        result = self.collection.find_all(query)
+        if result.present?
+          result.documents.map do |doc| 
+            self.from_rj_document(doc, persisted=true)
+          end
         end
       end
     end

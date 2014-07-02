@@ -19,9 +19,9 @@
 ## -------------------------------------------------------------------
 
 require "active_support/concern"
+require "riagent/persistence/persistence_strategy"
 require "riagent/persistence/riak_json_strategy"
 require "riagent/persistence/riak_no_index_strategy"
-require "riagent/collection/riak_collection"
 
 module Riagent
   # Provides a common persistence API for RiakJson Documents.
@@ -40,7 +40,7 @@ module Riagent
     # Delete the document from its collection
     def destroy
       run_callbacks(:destroy) do
-        self.class.collection.remove(self)
+        self.class.persistence.remove(self)
         @destroyed = true
       end
     end
@@ -55,12 +55,12 @@ module Riagent
       
       run_callbacks(context) do
         if context == :create
-          result = self.class.collection.insert(self)
+          key = self.class.persistence.insert(self)
         else
-          result = self.class.collection.update(self)
+          key = self.class.persistence.update(self)
         end
         self.persist!
-        result
+        key
       end
     end
     
@@ -99,12 +99,7 @@ module Riagent
       # @param [Integer] results_limit Number of results returned
       # @return [Array|nil] of ActiveDocument instances
       def all(results_limit=1000)
-        result = self.collection.all(results_limit)
-        if result.present?
-          result.documents.map do |doc| 
-            self.from_rj_document(doc, persisted=true)
-          end
-        end
+        self.persistence.all(results_limit)
       end
       
       # Set the document's persistence strategy
@@ -122,61 +117,44 @@ module Riagent
         @collection_type = coll_type
         case @collection_type
         when :riak_json
-          self.persistence_strategy = :riak_json
-          include Riagent::Persistence::RiakJsonStrategy
+          self.persistence = Riagent::Persistence::RiakJsonStrategy.new(self)
         when :riak_no_index
-          self.persistence_strategy = :riak_no_index
-          include Riagent::Persistence::RiakNoIndexStrategy
+          self.persistence = Riagent::Persistence::RiakNoIndexStrategy.new(self)
         end
       end
       
       # Load a document by key.
       def find(key)
         return nil if key.nil? or key.empty?
-        doc = self.collection.find_by_key(key)
-        self.from_rj_document(doc, persisted=true)
+        self.persistence.find(key)
       end
       
       # Return the first document that matches the query
       def find_one(query)
-        unless self.strategy_allows_query?
+        unless self.persistence.allows_query?
           raise NotImplementedError, "This collection type does not support querying"
         end
-        if query.kind_of? Hash
-          query = query.to_json
-        end
-        doc = self.collection.find_one(query)
-        if doc.present?
-          self.from_rj_document(doc, persisted=true) 
-        end
+        self.persistence.find_one(query)
       end
       
       def get_collection_type
         @collection_type ||= nil
       end
       
-      def persistence_strategy
-        @persistence_strategy ||= nil
+      def persistence
+        @persistence ||= nil
       end
       
-      def persistence_strategy=(strategy)
-        @persistence_strategy = strategy
+      def persistence=(persistence_strategy)
+        @persistence = persistence_strategy
       end
       
       # Return all documents that match the query
       def where(query)
-        unless self.strategy_allows_query?
+        unless self.persistence.allows_query?
           raise NotImplementedError, "This collection type does not support querying"
         end
-        if query.kind_of? Hash
-          query = query.to_json
-        end
-        result = self.collection.find_all(query)
-        if result.present?
-          result.documents.map do |doc| 
-            self.from_rj_document(doc, persisted=true)
-          end
-        end
+        self.persistence.where(query)
       end
     end
   end
