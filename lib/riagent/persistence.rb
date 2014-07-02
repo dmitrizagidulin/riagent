@@ -39,6 +39,7 @@ module Riagent
     
     # Delete the document from its collection
     def destroy
+      return nil if self.new_record?
       run_callbacks(:destroy) do
         self.class.persistence.remove(self)
         @destroyed = true

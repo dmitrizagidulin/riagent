@@ -70,6 +70,8 @@ describe "a Riagent::ActiveDocument that persists to RiakJson" do
   
   it "destroys via collection.remove()" do
     user = User.new
+    user.key = 'user123'
+    user.persist!  # Remove can only be called on persisted objects that have a key
     User.persistence.collection = MiniTest::Mock.new
     User.persistence.collection.expect :remove, nil, [user]
     

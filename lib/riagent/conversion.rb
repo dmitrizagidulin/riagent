@@ -29,6 +29,7 @@ module Riagent
     def destroyed?
       @destroyed ||= false
     end
+    alias :deleted? :destroyed?
     
     # Is this a new, unsaved document?
     # Required by ActiveModel::Conversion API

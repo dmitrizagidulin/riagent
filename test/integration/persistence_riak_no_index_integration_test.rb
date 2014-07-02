@@ -27,11 +27,17 @@ describe "RiakNoIndexStrategy persistence" do
     generated_key = user_pref.save
     generated_key.wont_be_empty
     assert user_pref.persisted?
+    user_pref.source_object.must_be_kind_of Riak::RObject
     
     # Now read the object back
     fetched_pref = UserPreference.find(generated_key)
     fetched_pref.must_be_kind_of UserPreference
     fetched_pref.key.must_equal generated_key
     fetched_pref.email_format.must_equal 'html'
+    fetched_pref.source_object.must_be_kind_of Riak::RObject
+    
+    # Delete the object (clean up)
+    fetched_pref.destroy
+    assert fetched_pref.destroyed?
   end
 end

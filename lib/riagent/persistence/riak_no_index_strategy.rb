@@ -25,19 +25,18 @@ module Riagent
   module Persistence
     class RiakNoIndexStrategy < PersistenceStrategy
       attr_writer :bucket
-      attr_writer :riak_object
       
       # @return [Boolean] Does this persistence strategy support querying?
       def allows_query?
         false
       end
       
-      # @return [Riak::Bucket]
+      # @return [Riak::Bucket] Riak bucket associated with this model/collection
       def bucket
         @bucket ||= self.client.bucket(self.collection_name)
       end
       
-      # @return [Riak::Client]
+      # @return [Riak::Client] Riak client (lazy-initialized, cached in current Thread)
       def client
         @client ||= Riagent.riak_client  # See lib/configuration.rb
       end
@@ -87,9 +86,16 @@ module Riagent
         document.key = riak_object.key
       end
       
-      # @return [Riak::RObject]
+      # Deletes the riak object that stores the document
+      # @param [RiakJson::ActiveDocument] document Document to be deleted
+      def remove(document)
+        self.riak_object.delete
+        document.source_object = nil
+      end
+      
+      # @return [Riak::RObject] New Riak object instance for this model/collection
       def riak_object
-        @riak_object ||= Riak::RObject.new(self.bucket).tap do |obj|
+        Riak::RObject.new(self.bucket).tap do |obj|
           obj.content_type = "application/json"
         end
       end
