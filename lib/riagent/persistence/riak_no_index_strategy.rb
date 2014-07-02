@@ -26,6 +26,17 @@ module Riagent
     class RiakNoIndexStrategy < PersistenceStrategy
       attr_writer :bucket
       
+      # Return all the documents in the collection.
+      # Since this is a "no index" strategy, this can only be done via a streaming list keys
+      # @param [Integer] results_limit Number of results returned (currently ignored)
+      # @return [Array<Riagent::ActiveDocument>] List of ActiveDocument instances
+      def all(results_limit)
+        self.bucket.keys.inject([]) do |acc, k|
+          obj = self.find(k)
+          obj ? acc << obj : acc
+        end
+      end
+      
       # @return [Boolean] Does this persistence strategy support querying?
       def allows_query?
         false

@@ -30,5 +30,6 @@ require 'examples/models/user_preference'
 I18n.config.enforce_available_locales = true
 
 # Load config file and set up the relevant clients for integration testing
+Riak.disable_list_keys_warnings = true
 Riagent.load_config_file('test/config/riak.yml')
 Riagent.init_clients(:test)  # Set up the client for the test environment
