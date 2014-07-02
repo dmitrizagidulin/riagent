@@ -46,12 +46,14 @@ module Riagent
       end
       env_config
     end
-    
+
+    # @param [Hash] env_config Configuration hash for a given environment
     def init_riak_json_client(env_config)
       client = RiakJson::Client.new(env_config['host'], env_config['http_port'])
       self.riak_json_client = client
     end
-    
+
+    # @param [Hash] env_config Configuration hash for a given environment
     def init_riak_client(env_config)
       client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port'], protocol: 'pbc'
       self.riak_client = client
@@ -61,7 +63,7 @@ module Riagent
     # Either called explicitly (see test/test_helper.rb for example usage)
     # or called by Rails through the 'riagent.configure_rails_initialization' initializer
     # in lib/railtie.rb
-    # @param [Hash] env_config Configuration hash for a given environment
+    # @param [Symbol] environment
     def init_clients(environment=:development)
       env_config = self.config_for(environment)
       self.init_riak_json_client(env_config)

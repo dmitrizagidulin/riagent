@@ -37,7 +37,7 @@ module Riagent
       !persisted?
     end
     
-    # Mark the document as saved/persisted
+    # Marks the document as saved/persisted
     # Called by +save+, and when instantiating query results (see ::Persistence)
     def persist!
       @persisted = true
@@ -66,7 +66,7 @@ module Riagent
     # Returns a +string+ representing the object's key suitable for use in URLs,
     # or +nil+ if <tt>persisted?</tt> is +false+.
     # Required by ActiveModel::Conversion API
-    # @return [String, nil]
+    # @return [String|nil]
     def to_param
       self.key
     end
