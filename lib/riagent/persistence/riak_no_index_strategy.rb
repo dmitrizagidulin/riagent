@@ -76,28 +76,35 @@ module Riagent
       def insert(document)
         if document.key.present?
           # Attempt to fetch existing object, just in case
-          self.riak_object = self.bucket.get_or_new(document.key)
+          riak_object = self.bucket.get_or_new(document.key)
+        else
+          riak_object = self.new_riak_object()
         end
-        riak_object = self.riak_object
-        riak_object.key = document.key
         riak_object.raw_data = document.to_json_document
         riak_object = riak_object.store
         document.source_object = riak_object  # store the riak object in document
         document.key = riak_object.key
       end
       
+      # @param [String|nil] Optional key
+      # @return [Riak::RObject] New Riak object instance for this model/collection
+      def new_riak_object(key=nil)
+        Riak::RObject.new(self.bucket, key).tap do |obj|
+          obj.content_type = "application/json"
+        end
+      end
+      
       # Deletes the riak object that stores the document
       # @param [RiakJson::ActiveDocument] document Document to be deleted
       def remove(document)
-        self.riak_object.delete
+        self.new_riak_object(document.key).delete
         document.source_object = nil
       end
       
-      # @return [Riak::RObject] New Riak object instance for this model/collection
-      def riak_object
-        Riak::RObject.new(self.bucket).tap do |obj|
-          obj.content_type = "application/json"
-        end
+      # @param [RiakJson::ActiveDocument] document Document to be updated
+      # @return [Integer] Document key
+      def update(document)
+        self.insert(document)
       end
     end
   end

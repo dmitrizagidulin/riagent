@@ -36,6 +36,11 @@ describe "RiakNoIndexStrategy persistence" do
     fetched_pref.email_format.must_equal 'html'
     fetched_pref.source_object.must_be_kind_of Riak::RObject
     
+    # Update the object
+    fetched_pref.update(email_format: 'pdf')
+    updated_pref = fetched_pref = UserPreference.find(generated_key)
+    updated_pref.email_format.must_equal 'pdf'
+    
     # Delete the object (clean up)
     fetched_pref.destroy
     assert fetched_pref.destroyed?
