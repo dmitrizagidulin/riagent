@@ -78,7 +78,11 @@ module Riagent
     
     # @return [Riak::Client] The Riak client for the current thread.
     def riak_client
-      Thread.current[:riak_client] ||= nil
+      unless Thread.current[:riak_client]
+        # Re-initialize client
+        self.init_riak_client(self.config_for(Rails.env))
+      end
+      Thread.current[:riak_client]
     end
     
     # Sets the Riak client for the current thread.
@@ -89,7 +93,11 @@ module Riagent
     
     # @return [RiakJson::Client] The RiakJson client for the current thread.
     def riak_json_client
-      Thread.current[:riak_json_client] ||= nil
+      unless Thread.current[:riak_json_client]
+        # Re-initialize client
+        self.init_riak_json_client(self.config_for(Rails.env))
+      end
+      Thread.current[:riak_json_client]
     end
     
     # Sets the RiakJson client for the current thread.
