@@ -28,3 +28,9 @@ Riagent.init_clients(:test)  # Set up the client for the test environment
 
 # Store the Solr indexing schema for the User model
 User.save_solr_schema()
+
+# Run these commands in the shell, in the riak/bin path:
+
+# Create a 'sets' bucket type. (The RiakDTSetStrategy uses it to store key lists, etc)
+# > riak-admin bucket-type create sets '{"props":{"datatype":"set"}}'
+# > riak-admin bucket-type activate sets
