@@ -41,11 +41,12 @@ describe "a Riagent::ActiveDocument has Persistence options" do
     assert User.persistence.allows_query?
   end
 
-  it "#:riak_no_index collection type" do
-    # Adding the line +collection_type :riak_no_index+ to a model
+  it "#:riak_kv collection type" do
+    # Adding the line +collection_type :riak_kv+ to a model
     # means that it will be persisted as a Riak object with no indices (k/v operations only)
-    UserPreference.get_collection_type.must_equal :riak_no_index
-    UserPreference.persistence.must_be_kind_of Riagent::Persistence::RiakNoIndexStrategy
+    UserPreference.get_collection_type.must_equal :riak_kv
+    UserPreference.persistence.class.must_equal Riagent::Persistence::RiakKVStrategy
+    UserPreference.persistence.wont_respond_to :all
 
     # It also grants access to a RiakJson::Client instance, to the model class
     UserPreference.persistence.client.must_be_kind_of Riak::Client
@@ -53,8 +54,14 @@ describe "a Riagent::ActiveDocument has Persistence options" do
     UserPreference.persistence.collection_name.must_equal 'user_preferences'
     UserPreference.persistence.bucket.must_be_kind_of Riak::Bucket
 
-    refute UserPreference.persistence.allows_query?, "RiakNoIndex strategy does not allow querying"
-    lambda { UserPreference.where({}) }.must_raise NotImplementedError, "RiakNoIndex strategy does not support querying"
-    lambda { UserPreference.find_one({}) }.must_raise NotImplementedError, "RiakNoIndex strategy does not support querying"
+    refute UserPreference.persistence.allows_query?, "RiakKVStrategy strategy does not allow querying"
+    lambda { UserPreference.where({}) }.must_raise NotImplementedError, "RiakKVStrategy strategy does not support querying"
+    lambda { UserPreference.find_one({}) }.must_raise NotImplementedError, "RiakKVStrategy strategy does not support querying"
+  end
+  
+  it "#list_keys_using: :streaming_list_keys" do
+    Contact.get_collection_type.must_equal :riak_kv
+    Contact.persistence.class.must_equal Riagent::Persistence::RiakNoIndexStrategy
+    Contact.persistence.must_respond_to :all
   end
 end

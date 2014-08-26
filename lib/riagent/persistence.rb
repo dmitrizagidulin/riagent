@@ -30,7 +30,11 @@ module Riagent
   module Persistence
     extend ActiveSupport::Concern
     
-    COLLECTION_TYPES = [:riak_json, :riak_no_index]
+    COLLECTION_TYPES = [:riak_json, :riak_kv]
+    
+    # Key Listing strategies for +:riak_kv+ collections 
+    # (the :riak_json collection type uses an implied solr query strategy)
+    VALID_KEY_LISTS = [:streaming_list_keys, :riak_dt_set]
     
     included do
       extend ActiveModel::Callbacks
@@ -111,7 +115,7 @@ module Riagent
       #   collection_type :riak_json  # persist to a RiakJson::Collection
       # end
       # </code>
-      def collection_type(coll_type)
+      def collection_type(coll_type, options={})
         unless COLLECTION_TYPES.include? coll_type
           raise ArgumentError, "Invalid collection type: #{coll_type.to_s}"
         end
@@ -119,8 +123,13 @@ module Riagent
         case @collection_type
         when :riak_json
           self.persistence = Riagent::Persistence::RiakJsonStrategy.new(self)
-        when :riak_no_index
-          self.persistence = Riagent::Persistence::RiakNoIndexStrategy.new(self)
+        when :riak_kv
+          self.persistence = Riagent::Persistence::RiakKVStrategy.new(self)
+          if options.has_key? :list_keys_using
+            if options[:list_keys_using] == :streaming_list_keys
+              self.persistence = Riagent::Persistence::RiakNoIndexStrategy.new(self)
+            end
+          end
         end
       end
       

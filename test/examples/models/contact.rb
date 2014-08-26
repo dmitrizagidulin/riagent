@@ -24,6 +24,9 @@
 class Contact
   include Riagent::ActiveDocument
   
+  # Persist to a Riak::Bucket, keep track of keys via a streaming List Keys operation (not recommended)
+  collection_type :riak_kv, list_keys_using: :streaming_list_keys
+  
   attribute :contact_name, String
   attribute :contact_email, String
 end

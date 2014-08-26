@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
+## Copyright (c) "2014" Dmitri Zagidulin
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -18,14 +18,17 @@
 ##
 ## -------------------------------------------------------------------
 
-class UserPreference
+class Category
   include Riagent::ActiveDocument
-
-  # Persist to a Riak::Bucket
-  collection_type :riak_kv
+  
+  # Persist to a Riak::Bucket, keep track of keys in a server-side Set CRDT data type
+  collection_type :riak_kv, list_keys_using: :riak_dt_set
   
   # Explicit attributes
-  # (key is an implied attribute, present in all ActiveDocument instances)
-  attribute :email_ok, Boolean, default: true
-  attribute :email_format, String, default: 'txt'
+  # key is an implied attribute, present in all ActiveDocument instances
+  attribute :name, String
+  attribute :description, String, default: ''
+  
+  # Validations
+  validates_presence_of :name
 end
