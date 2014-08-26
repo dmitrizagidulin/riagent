@@ -46,7 +46,6 @@ describe "a Riagent::ActiveDocument has Persistence options" do
     # means that it will be persisted as a Riak object with no indices (k/v operations only)
     UserPreference.get_collection_type.must_equal :riak_kv
     UserPreference.persistence.class.must_equal Riagent::Persistence::RiakKVStrategy
-    UserPreference.persistence.wont_respond_to :all
 
     # It also grants access to a RiakJson::Client instance, to the model class
     UserPreference.persistence.client.must_be_kind_of Riak::Client
@@ -62,6 +61,5 @@ describe "a Riagent::ActiveDocument has Persistence options" do
   it "#list_keys_using: :streaming_list_keys" do
     Contact.get_collection_type.must_equal :riak_kv
     Contact.persistence.class.must_equal Riagent::Persistence::RiakNoIndexStrategy
-    Contact.persistence.must_respond_to :all
   end
 end

@@ -20,20 +20,22 @@
 
 require 'test_helper'
 
-describe "a Riagent::ActiveDocument that persists via RiakNoIndex strategy" do
+describe "a Riagent::ActiveDocument that persists via RiakKVStrategy" do
   it "#model persistence instance methods" do
-    contact = Contact.new
+    user_pref = UserPreference.new
     
-    contact.must_respond_to :save
-    contact.must_respond_to :save!
-    contact.must_respond_to :update
-    contact.must_respond_to :update_attributes  # alias for update()
-    contact.must_respond_to :update!
-    contact.must_respond_to :destroy
+    # Adding the line +collection_type :riak_no_index+ to a model 
+    # exposes the usual array of persistence methods
+    user_pref.must_respond_to :save
+    user_pref.must_respond_to :save!
+    user_pref.must_respond_to :update
+    user_pref.must_respond_to :update_attributes  # alias for update()
+    user_pref.must_respond_to :update!
+    user_pref.must_respond_to :destroy
   end
   
   it "#model persistence class methods" do
-    Contact.persistence.must_respond_to :all
-    Contact.persistence.must_respond_to :find
+    UserPreference.persistence.wont_respond_to :all
+    UserPreference.persistence.must_respond_to :find
   end
 end
