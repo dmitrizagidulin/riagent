@@ -40,6 +40,5 @@ describe "Riagent" do
   it "initializes a Riak ruby client" do
     # This should have been initialized from config file in test_helper.rb
     Riagent.riak_client.must_be_kind_of Riak::Client
-    Riagent.riak_client.protocol.must_equal 'pbc'
   end
 end

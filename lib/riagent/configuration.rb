@@ -55,7 +55,8 @@ module Riagent
 
     # @param [Hash] env_config Configuration hash for a given environment
     def init_riak_client(env_config)
-      client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port'], protocol: 'pbc'
+#      client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port'], protocol: 'pbc'
+      client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port']
       self.riak_client = client
     end
     
