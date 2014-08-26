@@ -62,4 +62,10 @@ describe "a Riagent::ActiveDocument has Persistence options" do
     Contact.get_collection_type.must_equal :riak_kv
     Contact.persistence.class.must_equal Riagent::Persistence::RiakNoIndexStrategy
   end
+  
+  it "#list_keys_using: :riak_dt_set" do
+    Category.get_collection_type.must_equal :riak_kv
+    Category.persistence.class.must_equal Riagent::Persistence::RiakDTSetStrategy
+  end
+
 end

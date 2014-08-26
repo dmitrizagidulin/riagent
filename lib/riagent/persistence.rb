@@ -20,6 +20,7 @@
 
 require "active_support/concern"
 require "riagent/persistence/persistence_strategy"
+require "riagent/persistence/riak_dt_set_strategy"
 require "riagent/persistence/riak_json_strategy"
 require "riagent/persistence/riak_no_index_strategy"
 
@@ -128,6 +129,8 @@ module Riagent
           if options.has_key? :list_keys_using
             if options[:list_keys_using] == :streaming_list_keys
               self.persistence = Riagent::Persistence::RiakNoIndexStrategy.new(self)
+            elsif options[:list_keys_using] == :riak_dt_set
+              self.persistence = Riagent::Persistence::RiakDTSetStrategy.new(self)
             end
           end
         end
