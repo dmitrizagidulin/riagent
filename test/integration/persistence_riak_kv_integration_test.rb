@@ -28,11 +28,7 @@ describe "RiakNoIndexStrategy persistence" do
     generated_key.wont_be_empty
     assert user_pref.persisted?
     user_pref.source_object.must_be_kind_of Riak::RObject
-    
-    # Test all() / List Keys operation. (Obviously not recommended in production)
-    all_docs = UserPreference.all()
-    all_docs[0].must_be_kind_of UserPreference
-    
+
     # Now read the object back
     fetched_pref = UserPreference.find(generated_key)
     fetched_pref.must_be_kind_of UserPreference
