@@ -26,6 +26,13 @@ module Riagent
     class RiakDTSetStrategy < RiakKVStrategy
       attr_writer :key_list_set
       
+      # Adds a key to the collection key list (usually done as part of an insert)
+      # Added as a standalone method for ease of testing
+      # @param [String] key Key to be added to list
+      def add_key(key)
+        self.key_list_set.add(key)
+      end
+      
       # Return all the documents in the collection.
       # Uses Riak 2.0 CRDT Set Data type to keep track of collection key list
       # @param [Integer] results_limit Number of results returned (currently ignored)
@@ -37,14 +44,43 @@ module Riagent
         all_docs_hash.values
       end
       
+      # Return all keys in the collection
+      # @return [Array<String>] List of all keys in the collection
       def all_keys
-        self.key_list_set.members
+        self.key_list_set.members.to_a
       end
       
+      # Deletes a key from the key list (usually called by remove()).
+      def delete_key(key)
+        key_list_set = self.key_list_set.reload
+        key_list_set.remove(key)
+      end
+      
+      # Clears the key list set
+      def delete_key_list
+        # Perform a Riak DELETE operation (using the bucket type interface)
+        self.key_lists_bucket.delete self.key_list_set_name, type: 'sets'
+      end
+      
+      # Insert a document into the collection.
+      # Also inserts the document's key into the key list set.
+      # @param [RiakJson::ActiveDocument] document Document to be inserted
+      # @return [String] Document key
+      def insert(document)
+        doc_key = super
+        self.add_key(doc_key)
+        doc_key
+      end
+      
+      # Return the Crdt Set object that keeps track of keys in this collection
+      # @return [Riak::Crdt::Set]
       def key_list_set 
+        # Note: Assumes that the Bucket Type for Sets is the default 'sets'
         @key_list_set || Riak::Crdt::Set.new(self.key_lists_bucket, self.key_list_set_name)
       end
       
+      # Return the key name of the set that keeps track of keys in this collection
+      # @return [String]
       def key_list_set_name
         '_rg_keys_' + self.collection_name()
       end
@@ -53,6 +89,12 @@ module Riagent
       # @return [Riak::Bucket]
       def key_lists_bucket
         self.client.bucket('_rg_key_lists')
+      end
+      
+      def remove(document)
+        doc_key = document.key
+        super
+        self.delete_key(doc_key)
       end
     end
   end

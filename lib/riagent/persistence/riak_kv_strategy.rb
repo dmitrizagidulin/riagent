@@ -75,7 +75,7 @@ module Riagent
       end
       
       # @param [RiakJson::ActiveDocument] document Document to be inserted
-      # @return [Integer] Document key
+      # @return [String] Document key
       def insert(document)
         if document.key.present?
           # Attempt to fetch existing object, just in case
