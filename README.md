@@ -78,7 +78,7 @@ class User
 
   # Associations
   has_one :email_preference, :class => EmailPreference
-  has_many :posts, :class => BlogPost, :using => :solr
+  has_many :posts, :class => BlogPost, :using => :key_set
 
   # Validations
   validates_presence_of :username

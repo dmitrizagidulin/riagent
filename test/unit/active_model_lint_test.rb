@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
+## Copyright (c) "2014-2015" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -23,7 +23,7 @@ require 'active_model/lint'
 
 # Runs the ActiveModel::Lint test suite, to make sure a model fits the ActiveModel API
 # See http://yehudakatz.com/2010/01/10/activemodel-make-any-ruby-object-feel-like-activerecord/
-class ActiveModelLintTest < Minitest::Unit::TestCase
+class ActiveModelLintTest < Minitest::Test
   include ActiveModel::Lint::Tests
   
   def setup

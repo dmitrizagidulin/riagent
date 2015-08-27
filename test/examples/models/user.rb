@@ -34,7 +34,7 @@ class User
   
   # Associations
   has_one :address_book, :class => AddressBook
-  has_many :posts, :class => BlogPost, :using => :solr
+  has_many :posts, :class => BlogPost, :using => :key_set
   
   # Validations
   validates_presence_of :username

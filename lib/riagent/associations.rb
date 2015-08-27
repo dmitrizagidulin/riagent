@@ -25,20 +25,55 @@ module Riagent
     extend ActiveSupport::Concern
     
     module ClassMethods
+      # Creates a has_many association
+      #
+      # @param options [Hash] Association options
+      # @option options [Symbol] :using The query type/mechanism for this association
+      # @option options [Symbol] :class Target class for the association
       def has_many(name, options={})
         query_type = options[:using]
         target_class = options[:class]
         case query_type
+        when :key_set
+          has_many_using_key_set(name, target_class, options)
         when :solr
-          has_many_using_solr(name, target_class, query_type, options)
+          has_many_using_solr(name, target_class, options)
         else
           raise ArgumentError, ":using query type not supported"
         end
       end
       
-      # Create a has_many association where the collection will be loaded
+      # Creates a has_many association, where the collection will be loaded
+      # from an external crdt Set containing the child keys
+      #
+      # @param name [String] Association name
+      # @param target_class [Class] Target class
+      # @param options [Hash] Association options (currently unused)
+      def has_many_using_key_set(name, target_class, options)
+        # Create a <target name>_cache attribute accessors
+        # These will be used to store the actual loaded collection
+        target_cache_attribute = "#{name}_cache".to_sym
+        attr_accessor target_cache_attribute
+        
+        # Create the getter method
+        # Example: for 'has_many :posts', the getter method is :posts
+        target_getter_method = "#{name}".to_sym
+
+        define_method(target_getter_method) do
+        end
+        
+        
+        # Create the setter method=
+        # Example: for 'has_many :posts', the setter method is :posts=
+        target_setter_method = "#{name}=".to_sym
+
+        define_method(target_setter_method) do | target |
+        end
+      end
+      
+      # Creates a has_many association where the collection will be loaded
       # via Solr queries.
-      def has_many_using_solr(name, target_class, query_type, options)
+      def has_many_using_solr(name, target_class, options)
         target_getter_method = "#{name}".to_sym
         
         # Create a <target name>_cache attribute accessors

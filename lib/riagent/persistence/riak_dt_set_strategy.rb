@@ -91,6 +91,8 @@ module Riagent
         self.client.bucket('_rg_key_lists')
       end
       
+      # Delete a document from a collection, and delete its key from the key list set
+      # @param [Riagent::ActiveDocument] document Document to be removed
       def remove(document)
         doc_key = document.key
         super
