@@ -254,6 +254,13 @@ Riak instance)
 cp test/config/riak.yml.example test/config/riak.yml
 ```
 
+The integration tests require that a Set bucket type be created, named `sets`:
+
+```
+riak-admin bucket-type create sets '{"props":{"datatype":"set"}}'
+riak-admin bucket-type activate sets
+```
+
 To run the tests:
 
 ```

@@ -4,16 +4,16 @@
 # Configure Riak and RiakJson connections for the client, by environment
 development:
   http_port: 8098
-  pb_port: 8097   # Protocol Buffer port
+  pb_port: 8087   # Protocol Buffer port
   host: 127.0.0.1
 
 # You should spin up another Riak instance to use as a test server
 test:
   http_port: 8098
-  pb_port: 8097
+  pb_port: 8087
   host: 127.0.0.1
 
 production:
   http_port: 8098
-  pb_port: 8097
+  pb_port: 8087
   host: 127.0.0.1
