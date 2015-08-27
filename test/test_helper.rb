@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
+## Copyright (c) "2014-2015" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -22,6 +22,7 @@ require 'minitest/autorun'
 require 'minitest-spec-context'
 require 'riagent'
 require 'examples/models/address_book'
+require 'examples/models/blog_post'
 require 'examples/models/category'
 require 'examples/models/contact'
 require 'examples/models/user'

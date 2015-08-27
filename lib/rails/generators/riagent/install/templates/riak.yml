@@ -1,4 +1,4 @@
-# Configure Riak and RiakJson connections for the client, by environment
+# Configure Riak connections for the client, by environment
 development:
   http_port: 8098
   pb_port: 8097   # Protocol Buffer port

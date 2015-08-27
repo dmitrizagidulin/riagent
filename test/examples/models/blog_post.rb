@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
+## Copyright (c) "2014-2015" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -21,11 +21,11 @@
 class BlogPost
   include Riagent::ActiveDocument
   
-  collection_type :riak_json  # Persist to a RiakJson::Collection
+  collection_type :riak_kv
   
   # Explicit attributes
   # key is an implied attribute, present in all ActiveDocument instances
-  attribute :title, String, search_index: { as: :text }
-  attribute :description, String, search_index: { as: :text }
-  attribute :body, String, search_index: { as: :text }
+  attribute :title, String
+  attribute :description, String
+  attribute :body, String
 end

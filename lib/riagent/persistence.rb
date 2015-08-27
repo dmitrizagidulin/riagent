@@ -21,20 +21,18 @@
 require "active_support/concern"
 require "riagent/persistence/persistence_strategy"
 require "riagent/persistence/riak_dt_set_strategy"
-require "riagent/persistence/riak_json_strategy"
 require "riagent/persistence/riak_no_index_strategy"
 
 module Riagent
-  # Provides a common persistence API for RiakJson Documents.
+  # Provides a common persistence API for Riagent Documents.
   # Most persistence calls are delegated to the Collection class instance,
   # which are implemented in persistence/*_strategy.rb modules.
   module Persistence
     extend ActiveSupport::Concern
     
-    COLLECTION_TYPES = [:riak_json, :riak_kv]
+    COLLECTION_TYPES = [:riak_kv]
     
     # Key Listing strategies for +:riak_kv+ collections 
-    # (the :riak_json collection type uses an implied solr query strategy)
     VALID_KEY_LISTS = [:streaming_list_keys, :riak_dt_set]
     
     included do
@@ -113,7 +111,8 @@ module Riagent
       # <code>
       # class SomeModel
       #   include Riagent::ActiveDocument
-      #   collection_type :riak_json  # persist to a RiakJson::Collection
+      #   collection_type :riak_kv,   # Persist to a Riak::Bucket 
+      #                   list_keys_using: :riak_dt_set  #keep track of keys in a Set CRDT data type
       # end
       # </code>
       def collection_type(coll_type, options={})
@@ -122,8 +121,6 @@ module Riagent
         end
         @collection_type = coll_type
         case @collection_type
-        when :riak_json
-          self.persistence = Riagent::Persistence::RiakJsonStrategy.new(self)
         when :riak_kv
           self.persistence = Riagent::Persistence::RiakKVStrategy.new(self)
           if options.has_key? :list_keys_using

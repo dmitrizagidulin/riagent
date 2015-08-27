@@ -64,7 +64,7 @@ module Riagent
       
       # Insert a document into the collection.
       # Also inserts the document's key into the key list set.
-      # @param [RiakJson::ActiveDocument] document Document to be inserted
+      # @param [Riagent::ActiveDocument] document Document to be inserted
       # @return [String] Document key
       def insert(document)
         doc_key = super

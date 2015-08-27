@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
+## Copyright (c) "2014-2015" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -37,7 +37,7 @@ module Riagent
       end
       
       # Create a has_many association where the collection will be loaded
-      # via RiakJson Solr queries.
+      # via Solr queries.
       def has_many_using_solr(name, target_class, query_type, options)
         target_getter_method = "#{name}".to_sym
         

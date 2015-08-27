@@ -1,7 +1,7 @@
 # coding: utf-8
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
+## Copyright (c) "2014-2015" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -28,8 +28,8 @@ Gem::Specification.new do |spec|
   spec.version       = Riagent::VERSION
   spec.authors       = ["Dmitri Zagidulin"]
   spec.email         = ["dzagidulin@gmail.com"]
-  spec.summary       = %q{Rails integration for RiakJson document store}
-  spec.description   = %q{Provides Ruby on Rails integration for RiakJson (Riak + Solr document store API)}
+  spec.summary       = %q{Rails integration for the Riak KV NoSQL database}
+  spec.description   = %q{Provides Ruby on Rails integration for the Riak KV NoSQL database (plus Solr search)}
   spec.homepage      = "https://github.com/dmitrizagidulin/riagent"
   spec.license       = "Apache 2.0"
 
@@ -38,8 +38,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "riak_json"
-  spec.add_runtime_dependency "riak-client", "~> 2.0.0.rc1"
+  spec.add_runtime_dependency "riak-client", "~> 2.2.1"
   spec.add_runtime_dependency "riagent-document"
   spec.add_runtime_dependency "activemodel", "~> 4.0"
   spec.add_runtime_dependency "activesupport", "~> 4.0"

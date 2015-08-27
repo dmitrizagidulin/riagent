@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
+## Copyright (c) "2014-2015" Dmitri Zagidulin
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -19,5 +19,5 @@
 ## -------------------------------------------------------------------
 
 module Riagent
-  VERSION = "0.0.2"
+  VERSION = "0.0.3"
 end

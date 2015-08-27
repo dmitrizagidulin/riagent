@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
+## Copyright (c) "2014-2015" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -20,6 +20,7 @@
 
 require "active_support/concern"
 require "riak"
+require "erb"
 
 module Riagent
   module Configuration
@@ -48,12 +49,6 @@ module Riagent
     end
 
     # @param [Hash] env_config Configuration hash for a given environment
-    def init_riak_json_client(env_config)
-      client = RiakJson::Client.new(env_config['host'], env_config['http_port'])
-      self.riak_json_client = client
-    end
-
-    # @param [Hash] env_config Configuration hash for a given environment
     def init_riak_client(env_config)
 #      client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port'], protocol: 'pbc'
       client = Riak::Client.new host: env_config['host'], pb_port: env_config['pb_port']
@@ -67,7 +62,6 @@ module Riagent
     # @param [Symbol] environment
     def init_clients(environment=:development)
       env_config = self.config_for(environment)
-      self.init_riak_json_client(env_config)
       self.init_riak_client(env_config)
     end
     
@@ -90,21 +84,6 @@ module Riagent
     # @param [Riak::Client] value the client
     def riak_client=(value)
       Thread.current[:riak_client] = value
-    end
-    
-    # @return [RiakJson::Client] The RiakJson client for the current thread.
-    def riak_json_client
-      unless Thread.current[:riak_json_client]
-        # Re-initialize client
-        self.init_riak_json_client(self.config_for(Rails.env))
-      end
-      Thread.current[:riak_json_client]
-    end
-    
-    # Sets the RiakJson client for the current thread.
-    # @param [RiakJson::Client] value the client
-    def riak_json_client=(value)
-      Thread.current[:riak_json_client] = value
     end
   end
 end

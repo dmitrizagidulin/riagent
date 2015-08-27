@@ -7,14 +7,11 @@ Sinatra.
 ## Requirements
  - Ruby 1.9+
  - [Riak](http://basho.com/products/riak-kv/) version 2.0 or later
- - [RiakJson](https://github.com/basho-labs/riak_json_ruby_client) Ruby Client
-    gem installed locally
  - [riagent-document](https://github.com/dmitrizagidulin/riagent-document) gem
     installed locally
 
 ## Motivation
 *a.k.a. Why not just use a plain
-[riak_json client](https://github.com/basho-labs/riak_json_ruby_client) or a
 [riak-ruby-client](https://github.com/basho/riak-ruby-client)?*
 
 A Riak client just answers the question "How do I store stuff in Riak?".
@@ -30,7 +27,7 @@ a developer must answer further questions:
 
 Riagent attempts to provide answers to those questions, to encode recommended
 best-practice Riak query patterns, and in general to aid rapid application
-development by working with Riak's strenghts while respecting its limitations.
+development by working with Riak's strengths while respecting its limitations.
 It is intended as a spiritual successor to
 [Ripple](https://github.com/basho-labs/ripple).
 
@@ -69,16 +66,16 @@ Search/Solr integration?
 Riagent provides a set of high-level notations and functionality that allows
 developers create collections and associations on Riak, either via plain K/V
 operations when possible, or via advanced mechanisms such as
-Solr/[RiakJson](https://github.com/basho-labs/riak_json) queries when necessary.
+Solr queries when necessary.
 
 ```ruby
 class User
   include Riagent::ActiveDocument
 
-  collection_type :riak_json  # Persist to a RiakJson::Collection
+  collection_type :riak_kv
 
-  attribute :username, String, search_index: { as: :text }
-  attribute :email, String, search_index: { as: :string }
+  attribute :username, String
+  attribute :email, String
   attribute :language, String, default: 'en'
 
   # Associations
@@ -104,8 +101,6 @@ Riagent and ActiveDocuments are integrated into the usual Rails workflow.
  - Provides ```before_save``` / ```after_save``` type Callback functionality
  - Provides a custom Query capability (to Riak/Solr), for searches, range
     queries, aggregations and more
- - Derives RiakJson/Solr search schemas from annotated document attributes (see
-    Schemas below)
 
 ## Usage
 ### Adding Riagent to a Rails App
@@ -181,70 +176,6 @@ user.destroy  # deletes the document
 ActiveDocument currently supports ```before_*``` and ```after_*``` [callbacks](http://api.rubyonrails.org/classes/ActiveSupport/Callbacks.html)
 for the following events:
 ```[:create, :update, :save, :destroy]```
-
-### Search and Querying
-See the Querying sections of [RJ Ruby Client](https://github.com/basho-labs/riak_json_ruby_client#querying-riakjson---find_one-and-find)
-and [RiakJson itself](https://github.com/basho-labs/riak_json/blob/master/docs/query.md)
-```ruby
-# All matching instances
-us_users = User.where({ country: 'USA' })   # => array of US user instances
-# One instance (the first)
-user = User.find_one({ username: 'HieronymusBosch' })
-```
-
-## Search Schema Definition
-RiakJson uses Solr/Yokozuna to provide indexing and search capability for its
-collections. If you do not specify a collection schema explicitly, RiakJson
-creates one when you insert the first document to that collection (it [infers
-the
-schema](https://github.com/basho-labs/riak_json/blob/master/docs/architecture.md#inferred-schemas)
-based on the basic data types of the field values in the JSON). However, if you
-do not want to use this default schema behavior (for example, because RJ tries
-to index all of the fields), you can define and set a collection schema
-yourself, using RJ Ruby Client's [schema
-administration](https://github.com/basho-labs/riak_json_ruby_client#schema-administration)
-API.
-
-To make the process of schema definition even easier for developers,
-ActiveDocument provides the ```search_index``` attribute option. This annotation
-allows you to specify which document fields you want added to your search
-schema, as well as the Solr field type that will be used to index it.
-
-For example, the following model:
-```ruby
-class User
-  include Riagent::ActiveDocument
-
-  attribute :username, String, required: true, search_index: { :as => :text }
-  attribute :email, String, search_index: { :as => :string }
-  attribute :country, String, default: 'USA'
-end
-```
-will enable you to construct the following schema:
-```ruby
-User.schema   # =>
-#   [{
-#     :name => "username",
-#     :type => "text",
-#     :require => true
-#    }, {
-#     :name => "email",
-#     :type => "string",
-#     :require => false
-#    }
-# ]
-#   # Note that 'country' is not included in this schema, and so will not be indexed.
-```
-
-### Schema Administration
-Note that if you use the ```search_index``` attribute annotations above, you
-will have to explicitly notify RiakJson of your intent to save the schema. You
-will have to call the ```set_schema()``` collection method before you start
-inserting documents (for example, in a ```db:setup``` Rake task).
-
-```ruby
-User.collection.set_schema(User.schema)
-```
 
 ## Testing the Riagent gem
 First, set up the Riak config file for (and make sure it's pointing to a running

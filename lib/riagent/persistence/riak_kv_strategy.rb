@@ -74,7 +74,7 @@ module Riagent
         active_doc_instance
       end
       
-      # @param [RiakJson::ActiveDocument] document Document to be inserted
+      # @param [Riagent::ActiveDocument] document Document to be inserted
       # @return [String] Document key
       def insert(document)
         if document.key.present?
@@ -98,13 +98,13 @@ module Riagent
       end
       
       # Deletes the riak object that stores the document
-      # @param [RiakJson::ActiveDocument] document Document to be deleted
+      # @param [Riagent::ActiveDocument] document Document to be deleted
       def remove(document)
         self.new_riak_object(document.key).delete
         document.source_object = nil
       end
       
-      # @param [RiakJson::ActiveDocument] document Document to be updated
+      # @param [Riagent::ActiveDocument] document Document to be updated
       # @return [Integer] Document key
       def update(document)
         self.insert(document)

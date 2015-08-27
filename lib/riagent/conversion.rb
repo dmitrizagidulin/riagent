@@ -44,7 +44,7 @@ module Riagent
       @persisted = true
     end
     
-    # Has this document been saved to RiakJson?
+    # Has this document been saved to Riak?
     # Required by ActiveModel::Conversion API
     # @return [Boolean]
     def persisted?

@@ -26,15 +26,8 @@ describe "Riagent" do
     Riagent.config.wont_be_empty  # The config file was initialized by test_helper.rb
     Riagent.must_respond_to :load_config_file
     Riagent.must_respond_to :init_clients
-    Riagent.must_respond_to :init_riak_json_client
-    Riagent.must_respond_to :riak_json_client
     Riagent.must_respond_to :init_riak_client
     Riagent.must_respond_to :riak_client
-  end
-  
-  it "initializes a RiakJson client" do
-    # This should have been initialized from config file in test_helper.rb
-    Riagent.riak_json_client.must_be_kind_of RiakJson::Client
   end
   
   it "initializes a Riak ruby client" do

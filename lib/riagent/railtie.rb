@@ -19,7 +19,6 @@
 ## -------------------------------------------------------------------
 
 require 'rails/railtie'
-require 'riak_json'
 
 module Riagent
   # Railtie for Rails integration and initialization

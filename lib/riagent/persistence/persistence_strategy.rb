@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2014" Dmitri Zagidulin
+## Copyright (c) "2014-2015" Dmitri Zagidulin
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -17,8 +17,6 @@
 ## under the License.
 ##
 ## -------------------------------------------------------------------
-
-require "riak_json"
 
 module Riagent
   module Persistence

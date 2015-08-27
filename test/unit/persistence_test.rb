@@ -25,29 +25,13 @@ describe "a Riagent::ActiveDocument has Persistence options" do
     lambda { User.collection_type :invalid }.must_raise ArgumentError
   end
 
-  it "#:riak_json collection_type" do
-    # Adding the line +collection_type :riak_json+ to a model
-    # means that it will be persisted to a RiakJson::Collection
-    User.get_collection_type.must_equal :riak_json
-    User.persistence.must_be_kind_of Riagent::Persistence::RiakJsonStrategy
-
-    # It also grants access to a RiakJson::Client instance, to the model class
-    User.persistence.client.must_be_kind_of RiakJson::Client
-
-    User.persistence.collection.must_be_kind_of RiakJson::Collection
-    User.persistence.collection_name.must_equal 'users'
-
-    # Check to see if the RiakJson persistence strategy supports querying
-    assert User.persistence.allows_query?
-  end
-
   it "#:riak_kv collection type" do
     # Adding the line +collection_type :riak_kv+ to a model
     # means that it will be persisted as a Riak object with no indices (k/v operations only)
     UserPreference.get_collection_type.must_equal :riak_kv
     UserPreference.persistence.class.must_equal Riagent::Persistence::RiakKVStrategy
 
-    # It also grants access to a RiakJson::Client instance, to the model class
+    # It also grants access to a Riak::Client instance, to the model class
     UserPreference.persistence.client.must_be_kind_of Riak::Client
 
     UserPreference.persistence.collection_name.must_equal 'user_preferences'

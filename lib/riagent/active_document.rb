@@ -25,7 +25,6 @@ require 'riagent/document'
 require 'riagent/conversion'
 require 'riagent/persistence'
 require 'riagent/associations'
-require 'riagent/search_schema'
 
 module Riagent
   module ActiveDocument
@@ -45,7 +44,7 @@ module Riagent
     
     module ClassMethods
       # Returns string representation for the collection name
-      # Used to determine the RiakJson::Collection name, or the Riak Bucket name
+      # Used to determine the Riak Bucket name
       # Uses ActiveModel::Naming functionality to derive the name
       def collection_name
         self.model_name.plural
