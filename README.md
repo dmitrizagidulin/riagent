@@ -70,7 +70,7 @@ Solr queries when necessary.
 class User
   include Riagent::ActiveDocument
 
-  collection_type :riak_kv
+  collection_type :riak_kv, list_keys_using: :riak_dt_set
 
   attribute :username, String
   attribute :email, String

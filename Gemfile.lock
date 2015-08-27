@@ -1,11 +1,11 @@
 PATH
   remote: .
   specs:
-    riagent (0.0.3)
+    riagent (0.1.0)
       activemodel (~> 4.0)
       activesupport (~> 4.0)
       riagent-document (= 0.0.1)
-      riak-client (~> 2.2.1)
+      riak-client (~> 2.2)
 
 GEM
   remote: https://rubygems.org/

@@ -37,7 +37,6 @@ module Riagent
       include Riagent::Conversion
       include Riagent::Persistence
       include Riagent::Associations
-      extend Riagent::SearchSchema
       
       attr_accessor :source_object
     end

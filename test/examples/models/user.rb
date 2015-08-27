@@ -24,7 +24,7 @@ require_relative 'blog_post'
 class User
   include Riagent::ActiveDocument
   
-  collection_type :riak_kv
+  collection_type :riak_kv, list_keys_using: :riak_dt_set
   
   # Explicit attributes
   # key is an implied attribute, present in all ActiveDocument instances
