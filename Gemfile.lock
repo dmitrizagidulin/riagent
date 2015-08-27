@@ -4,7 +4,7 @@ PATH
     riagent (0.0.3)
       activemodel (~> 4.0)
       activesupport (~> 4.0)
-      riagent-document
+      riagent-document (= 0.0.1)
       riak-client (~> 2.2.1)
 
 GEM

@@ -5,10 +5,8 @@ Object Document Mapper for [Riak](http://basho.com/products/riak-kv/)
 Sinatra.
 
 ## Requirements
- - Ruby 1.9+
+ - Ruby 2+
  - [Riak](http://basho.com/products/riak-kv/) version 2.0 or later
- - [riagent-document](https://github.com/dmitrizagidulin/riagent-document) gem
-    installed locally
 
 ## Motivation
 *a.k.a. Why not just use a plain
